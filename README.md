@@ -16,4 +16,4 @@ h <- switch(BW,
 All function's h can be input by manually. If you want to compare with JMP or others, you can manually input. For example, if we input h=2.8809, then for Equipment DAR,
 the value from my R coe is exactly the same as in JMP.
 
-Almost all functions here are used in the manuscript
+Almost all functions here are used in the manuscript. The data here are simplified by removing critical information and had got approval from company. Only basice values are  kept here.
