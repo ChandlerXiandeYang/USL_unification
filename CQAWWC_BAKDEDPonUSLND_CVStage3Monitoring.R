@@ -36,7 +36,7 @@ CQAWWC_BAKDEDPonUSLND_CVStage3Monitoring <- function(
   
   if (ppu_ci_obj$CI_lower < 1) {
     message("Initial CI lower bound < 1, increasing bootstrap to ", max_boot)
-    ppu_ci_obj <- Ppu_CQAWWC_BAKDEDPonUSLND_CI(
+    ppu_ci_obj <- Ppu_CQAWWC_BAKDEDPonUSLND(
       data1 = data1, Residue1 = {{Residue1}}, USL1 = {{USL1}},
       data2 = data2, Residue2 = {{Residue2}}, USL2 = {{USL2}},
       data3 = data3, Residue3 = {{Residue3}}, USL3 = {{USL3}},
