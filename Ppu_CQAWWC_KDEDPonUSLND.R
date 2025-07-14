@@ -24,7 +24,7 @@ Ppu_CQAWWC_KDEDPonUSLND <- function(data1, Residue1, USL1,
   min_ppu <- min(ppu_named, na.rm = TRUE)
   
   # Combine minimal Ppu with all individual values
-  output <- c(Ppu_Min = min_ppu, ppu_named)
+  output <- c(Ppu = min_ppu, ppu_named)
   
   return(output)
 }
