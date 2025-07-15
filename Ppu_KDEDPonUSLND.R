@@ -1,20 +1,16 @@
 Ppu_KDEDPonUSLND <- function(data, Residue, USL, BW = "Silver1.06") {
   library(dplyr)
   library(rlang)
-  
   residue_quo <- enquo(Residue)
   usl_quo <- enquo(USL)
-  
   data_clean <- data %>%
     filter(!is.na(!!residue_quo), !is.na(!!usl_quo)) %>%
     mutate(Residue_Pct = (!!residue_quo / !!usl_quo) * 100)
   
   if (nrow(data_clean) == 0) stop("No valid rows remaining after removing NAs in Residue or USL.")
-  
-  x <- data_clean$Residue_Pct
+   x <- data_clean$Residue_Pct
   n <- length(x)
   s <- sd(x)
-  
   if (is.character(BW)) {
     BW <- match.arg(BW, choices = c("Silver1.06", "Silver0.9", "Silver0.9IQR"))
     h <- switch(BW,
