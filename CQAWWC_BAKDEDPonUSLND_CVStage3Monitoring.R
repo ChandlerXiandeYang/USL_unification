@@ -124,7 +124,7 @@ CQAWWC_BAKDEDPonUSLND_CVStage3Monitoring <- function(
   output <- data.frame(
     Ppu_training = ppu_ci_obj$Ppu,
     Ppu_threshold = CIL,
-    Ppu_testing = Testing_Ppu,
+    Ppu_monitoring = Testing_Ppu,
     decision = decision
     
   )
