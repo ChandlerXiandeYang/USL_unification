@@ -5,9 +5,10 @@ Ppu_SWWC_KDEDP <- function(data, Residue, USL, BW = "Silver1.06") {
   residue_quo <- enquo(Residue)
   usl_quo <- enquo(USL)
   
+  # Filter rows with non-NA Residue and USL, and select those columns renamed to fixed names
   data_clean <- data %>%
     filter(!is.na(!!residue_quo), !is.na(!!usl_quo)) %>%
-    mutate(Residue = !!residue_quo, USL = !!usl_quo)
+    select(Residue = !!residue_quo, USL = !!usl_quo)
   
   if (nrow(data_clean) == 0) {
     stop("No valid rows after removing NA values in Residue or USL.")
@@ -22,7 +23,8 @@ Ppu_SWWC_KDEDP <- function(data, Residue, USL, BW = "Silver1.06") {
     if (length(unique(res_values)) == 1) {
       return(100)
     } else {
-      result <- Ppu_KDEDPonUSLND(sub_df, Residue = Residue, USL = USL, BW = BW)
+      # Assuming Ppu_KDEDPonUSLND expects column names as strings:
+      result <- Ppu_KDEDPonUSLND(sub_df, Residue = "Residue", USL = "USL", BW = BW)
       return(result$Ppu)
     }
   })
@@ -31,8 +33,8 @@ Ppu_SWWC_KDEDP <- function(data, Residue, USL, BW = "Silver1.06") {
   
   overall_min <- min(ppu_named_vector, na.rm = TRUE)
   
-  # Combine overall min with subgroup values in one named vector
-  output <- c(Ppu = overall_min, ppu_named_vector)
+  # Combine overall min with subgroup values in one named vector, then convert to data frame
+  output <- as.data.frame(as.list(c(Ppu = overall_min, ppu_named_vector)), stringsAsFactors = FALSE)
   
   return(output)
 }
