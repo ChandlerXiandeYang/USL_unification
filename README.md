@@ -1,3 +1,13 @@
+
+How to use these functions? 
+
+1) For one CQA Ppu_KDEDPonUSLND generate the USL-normalized data's Ppu. Ppu_BAKDEDPonUSLND generates the Ppu and its confidence interval with USL-normalized data.
+2) For one CQA, Ppu_SWWC_KDEDP generate the worst case Ppu for from all its subgroups. This is the traditional method. We developed our USL-normalization method.
+3) For theree CQA, CQAWWC_KDEDPonUSLND generate CQA wise worst case Ppu for 1, 2, or 3 CQA DAR, CAR, Mic by USL-normalized data;CQAWWC_BAKDEDPonUSLND generate both Ppu and 95% confidence interval by bootstrap
+4) For three CQA, CQAWP_KDEDPonUSLND generate CQA wise pooled Ppu for 1, 2, or 3 CQA DAR, CAR, or Mic by USL-normalized data; CQAWP_BAKDEDPonUSLND generate both Ppu and 95% confidence interval by bootstrap
+5) Monitoring Model: 1+3+CQAWWC_KDEDPonUSLND_CVStage3Monitoring
+6) Monitoring Mode2: 1+4+CQAWWC_KDEDPonUSLND_CVStage3Monitoring
+
  Bandwidth Function
 
 JMP says its bandwidth is bw=0.9s/n^{1/5} and s is the uncoorrected sample standard deviation (i.e. divided by n but not n-1), and the grid=100.
@@ -11,9 +21,10 @@ h <- switch(BW,
                   sigma <- min(s, iqr_val / 1.34)
                   0.9 * sigma / n^(1/5)
                 })
-
+Almost all functions here are used in the manuscript. The data here are simplified by removing critical information and had got approval from company. Only basice values are  kept here.
 
 All function's h can be input by manually. If you want to compare with JMP or others, you can manually input. For example, if we input h=2.8809, then for Equipment DAR,
 the value from my R code is exactly the same as in JMP.
 
-Almost all functions here are used in the manuscript. The data here are simplified by removing critical information and had got approval from company. Only basice values are  kept here.
+
+   
