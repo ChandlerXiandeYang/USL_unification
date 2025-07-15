@@ -114,12 +114,6 @@ CQAWWC_BAKDEDPonUSLND_CVStage3Monitoring <- function(
   } else {
     "Cleaning process is NOT capable."
   }
-  
-  message(sprintf(
-    "Testing Ppu: %.3f, Monitoring Threshold Ppu: %.3f, Decision: %s",
-    Testing_Ppu, CIL, decision
-  ))
-  
   # Return as one-row data.frame, keep character columns as character (stringsAsFactors=FALSE)
   output <- data.frame(
     Ppu_training = ppu_ci_obj$Ppu,
