@@ -31,7 +31,7 @@ Ppu_CQAWWC_BAKDEDPonUSLND <- function(data1, Residue1, USL1,
                                                 data2_clean, {{Residue2}}, {{USL2}},
                                                 data3_clean, {{Residue3}}, {{USL3}},
                                                 BW = BW)
-  point_estimate <- point_estimate_all[["Ppu"]]
+  point_estimate <- point_estimate_all$Ppu
   
   # Bootstrap function: resample and calculate minimal Ppu from all datasets
   bootstrap_ppus <- replicate(n_boot, {
@@ -44,7 +44,7 @@ Ppu_CQAWWC_BAKDEDPonUSLND <- function(data1, Residue1, USL1,
                                      boot_data2, {{Residue2}}, {{USL2}},
                                      boot_data3, {{Residue3}}, {{USL3}},
                                      BW = BW)
-      res[["Ppu"]]  # extract minimal Ppu value only
+      res$Ppu  # extract minimal Ppu value only
     }, error = function(e) NA_real_)
   })
   
@@ -55,13 +55,13 @@ Ppu_CQAWWC_BAKDEDPonUSLND <- function(data1, Residue1, USL1,
   ci_lower <- quantile(bootstrap_ppus, probs = alpha / 2, names = FALSE)
   ci_upper <- quantile(bootstrap_ppus, probs = 1 - alpha / 2, names = FALSE)
   
-  list(
+  # Create a data frame with rounded results
+  df_result <- data.frame(
     Ppu = round(point_estimate, 3),
     CI_lower = round(ci_lower, 3),
-    CI_upper = round(ci_upper, 3),
-    n_boot = n_boot,
-    bootstrap_ppus = bootstrap_ppus
+    n_boot = n_boot
   )
+  
+  return(df_result)
 }
-
 
