@@ -46,10 +46,12 @@ Ppu_SWWC_KDEDP_Overall <- function(
   }
   
   subgroup_ppus <- all_ppus[!grepl("^Ppu$", names(all_ppus))]
-  
   overall_min <- min(subgroup_ppus, na.rm = TRUE)
   
-  output <- c(Ppu_Overall = overall_min, subgroup_ppus)
+  output_vector <- c(Ppu_Overall = overall_min, subgroup_ppus)
   
-  return(output)
+  # Return as a single-row data frame
+  output_df <- as.data.frame(as.list(output_vector), stringsAsFactors = FALSE)
+  
+  return(output_df)
 }
