@@ -1,17 +1,18 @@
 
-How to use these functions? 
+# How to use these functions? 
 
-###################################### USL-Normalization#############################################
+## USL-Normalization
 1) For one CQA: Ppu_KDEDPonUSLND generates the USL-normalized data's Ppu. Ppu_BAKDEDPonUSLND generates the Ppu and its 95% confidence interval with USL-normalized data.
 2) For 1 to 3 CQAs: CQAWWC_KDEDPonUSLND generate CQA wise worst case Ppu for 1, 2, or 3 CQA DAR, CAR, Mic by USL-normalized data;CQAWWC_BAKDEDPonUSLND generate both Ppu and 95% confidence interval by bootstrap
 3) For 1 to 3 CQAs, CQAWP_KDEDPonUSLND generate CQA wise pooled Ppu for 1, 2, or 3 CQA DAR, CAR, or Mic by USL-normalized data; CQAWP_BAKDEDPonUSLND generate both Ppu and 95% confidence interval by bootstrap
 4) Monitoring Model: 1)+2)+CQAWWC_KDEDPonUSLND_CVStage3Monitoring
 5) Monitoring Mode2: 1)+3)+CQAWWC_KDEDPonUSLND_CVStage3Monitoring
-########################################################### Traditional Ppu  #######################
+   
+## Traditional Ppu  
 7) For one CQA: Ppu_SWWC_KDEDP generate the worst case Ppu for from all its subgroups. This is the traditional method. it represents the CQA's Ppu.
    For 1 to 3 CQAs: Ppu_SWWC_KDEDP_overall generte the worst case Ppu for all CQA, i.e., it represent the overall Ppu of the cleaning provess.
 
-################################################ Bandwidth Function ##################################
+## Bandwidth Function 
 
 JMP says its bandwidth is bw=0.9s/n^{1/5} and s is the uncoorrected sample standard deviation (i.e. divided by n but not n-1), and the grid=100.
 However, it is not the case. I found bw=1.06s/n^{1/5} and s is the corrected sample standard deviation, and the grid should be much larger than grid=100. So, I used 2^15.
@@ -27,7 +28,7 @@ h <- switch(BW,
 All function's h can be input by manually. If you want to compare with JMP or others, you can manually input. For example, if we input h=2.8809, then for Equipment DAR,
 the value from my R code is exactly the same as in JMP.
 
-################################# Data Permission ############################################################
+## Data Permission 
 Almost all functions here are used in the manuscript. The data here are simplified by removing critical information and then got approval from company. 
 
 
