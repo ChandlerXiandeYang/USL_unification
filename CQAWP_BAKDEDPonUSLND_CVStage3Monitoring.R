@@ -53,7 +53,7 @@ CQAWP_BAKDEDPonUSLND_CVStage3Monitoring <- function(
   }
   
   if (is.null(CIL) || CIL < 1) {
-    ppu_ci_obj <- Ppu_CQAWP_BAKDEDPonNSLND(
+    ppu_ci_obj <- Ppu_CQAWP_BAKDEDPonUSLND(
       data1 = TrainingData1, Residue1 = {{ Residue1 }}, USL1 = {{ USL1 }},
       data2 = TrainingData2, Residue2 = {{ Residue2 }}, USL2 = {{ USL2 }},
       data3 = TrainingData3, Residue3 = {{ Residue3 }}, USL3 = {{ USL3 }},
@@ -65,7 +65,7 @@ CQAWP_BAKDEDPonUSLND_CVStage3Monitoring <- function(
     
     if (ppu_ci_obj$CI_lower < 1) {
       message("Initial CI lower bound < 1, increasing bootstrap to ", max_boot)
-      ppu_ci_obj <- Ppu_CQAWP_BAKDEDPonNSLND(
+      ppu_ci_obj <- Ppu_CQAWP_BAKDEDPonUSLND(
         data1 = TrainingData1, Residue1 = {{ Residue1 }}, USL1 = {{ USL1 }},
         data2 = TrainingData2, Residue2 = {{ Residue2 }}, USL2 = {{ USL2 }},
         data3 = TrainingData3, Residue3 = {{ Residue3 }}, USL3 = {{ USL3 }},
@@ -80,7 +80,7 @@ CQAWP_BAKDEDPonUSLND_CVStage3Monitoring <- function(
     }
     CIL <- ppu_ci_obj$CI_lower
   } else {
-    training_ppu <- Ppu_CQAWP_KDEDPonNSLND(
+    training_ppu <- Ppu_CQAWP_KDEDPonUSLND(
       data1 = TrainingData1, Residue1 = {{ Residue1 }}, USL1 = {{ USL1 }},
       data2 = TrainingData2, Residue2 = {{ Residue2 }}, USL2 = {{ USL2 }},
       data3 = TrainingData3, Residue3 = {{ Residue3 }}, USL3 = {{ USL3 }},
@@ -97,7 +97,7 @@ CQAWP_BAKDEDPonUSLND_CVStage3Monitoring <- function(
   CombinedData2 <- if (!is.null(TrainingData2)) bind_rows(TrainingData2, TestingData2) else NULL
   CombinedData3 <- if (!is.null(TrainingData3)) bind_rows(TrainingData3, TestingData3) else NULL
   
-  testing_ppu_result <- Ppu_CQAWP_KDEDPonNSLND(
+  testing_ppu_result <- Ppu_CQAWP_KDEDPonUSLND(
     data1 = CombinedData1, Residue1 = {{ Residue1 }}, USL1 = {{ USL1 }},
     data2 = CombinedData2, Residue2 = {{ Residue2 }}, USL2 = {{ USL2 }},
     data3 = CombinedData3, Residue3 = {{ Residue3 }}, USL3 = {{ USL3 }},
