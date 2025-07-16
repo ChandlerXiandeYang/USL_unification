@@ -8,7 +8,7 @@
 4) Monitoring Model 1: 1)+2)+CQAWWC_KDEDPonUSLND_CVStage3Monitoring
 5) Monitoring Model 2: 1)+3)+CQAWWC_KDEDPonUSLND_CVStage3Monitoring
 
- Note:  Bootstrap 1000 iteration and if CIL<1, change to 10000 iteration. Bandwidth BW can be Silver1.06, Silver0.9 and Silver0.9IQR. BW also can be set by yourself, e.g. BW=2.8809 for DAR, then the Ppu_KDEDPonUSLND output is 2.563 which is exactly the same as the output of JMP.
+ Note:  Bootstrap 1000 iterations but if CIL<1, in the training stage, it will change to 10000 iterations. Bandwidth BW can be Silver1.06, Silver0.9, Silver0.9IQR, or be set by yourself. For example, e.g. BW=2.8809 for DAR,, then the Ppu_KDEDPonUSLND output is 2.563 which is exactly the same as the output of JMP.
    
 ## Traditional Ppu  
 7) For one CQA: Ppu_SWWC_KDEDP generate the worst case Ppu for from all its subgroups. This is the traditional method. it represents the CQA's Ppu.
