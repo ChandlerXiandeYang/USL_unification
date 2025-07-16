@@ -5,8 +5,8 @@
 1) For one CQA: Ppu_KDEDPonUSLND generates the USL-normalized data's Ppu. Ppu_BAKDEDPonUSLND generates the Ppu and its 95% confidence interval with USL-normalized data.
 2) For 1 to 3 CQAs: CQAWWC_KDEDPonUSLND generate CQA wise worst case Ppu for 1, 2, or 3 CQA DAR, CAR, Mic by USL-normalized data;CQAWWC_BAKDEDPonUSLND generate both Ppu and 95% confidence interval by bootstrap
 3) For 1 to 3 CQAs, CQAWP_KDEDPonUSLND generate CQA wise pooled Ppu for 1, 2, or 3 CQA DAR, CAR, or Mic by USL-normalized data; CQAWP_BAKDEDPonUSLND generate both Ppu and 95% confidence interval by bootstrap
-4) Monitoring Model: 1)+2)+CQAWWC_KDEDPonUSLND_CVStage3Monitoring
-5) Monitoring Mode2: 1)+3)+CQAWWC_KDEDPonUSLND_CVStage3Monitoring
+4) Monitoring Model 1: 1)+2)+CQAWWC_KDEDPonUSLND_CVStage3Monitoring
+5) Monitoring Model 2: 1)+3)+CQAWWC_KDEDPonUSLND_CVStage3Monitoring
    
 ## Traditional Ppu  
 7) For one CQA: Ppu_SWWC_KDEDP generate the worst case Ppu for from all its subgroups. This is the traditional method. it represents the CQA's Ppu.
