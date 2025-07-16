@@ -24,7 +24,7 @@ Ppu_SWWC_KDEDP <- function(data, Residue, USL, BW = "Silver1.06") {
       return(100)
     } else {
       # Assuming Ppu_KDEDPonUSLND expects column names as strings:
-      result <- Ppu_KDEDPonUSLND(sub_df, Residue = "Residue", USL = "USL", BW = BW)
+      result <- Ppu_KDEDPonUSLND(sub_df, Residue = Residue, USL = USL, BW = BW)
       return(result$Ppu)
     }
   })
