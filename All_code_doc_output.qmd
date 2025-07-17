@@ -634,7 +634,77 @@ CQAWP_BAKDEDPonUSLND_CVStage3Monitoring <- function(
 
 
 ```
-# 5.1 Tradition Ppu for each subgroup and the minmal as the CQA's Ppu 
+# 5.1 Tradition Ppu by KDEDP (ISO2154-4 Method)
+ 
+
+```{r Ppu_KDEDP}
+#| echo: False
+#| message: False
+#| warning: False
+Ppu_KDEDP <- function(data, Residue, USL, BW = "Silver1.06") {
+  library(dplyr)
+  library(rlang)
+
+  residue_quo <- enquo(Residue)
+  usl_quo <- enquo(USL)
+  data_clean <- data %>%
+    filter(!is.na(!!residue_quo), !is.na(!!usl_quo)) %>%
+    mutate(
+      Residue_Val = !!residue_quo,
+      USL_Val = !!usl_quo
+    )
+
+  if (nrow(data_clean) == 0) stop("No valid rows remaining after removing NAs in Residue or USL.")
+  x <- data_clean$Residue_Val
+  usl_val <- data_clean$USL_Val[1]  # Assume constant USL
+  n <- length(x)
+  #s <- sqrt(mean((x - mean(x))^2))  
+  s <- sd(x)
+  if (is.character(BW)) {
+    BW <- match.arg(BW, choices = c("Silver1.06", "Silver0.9", "Silver0.9IQR"))
+    h <- switch(BW,
+                "Silver1.06" = 1.06 * s / n^(1/5),
+                "Silver0.9" = 0.9 * s / n^(1/5),
+                "Silver0.9IQR" = {
+                  iqr_val <- IQR(x)
+                  sigma <- min(s, iqr_val / 1.34)
+                  0.9 * sigma / n^(1/5)
+                })
+    bw_method <- BW
+  } else if (is.numeric(BW) && length(BW) == 1 && BW > 0) {
+    h <- BW
+    bw_method <- "User-defined"
+  } else {
+    stop("BW must be numeric > 0 or one of: 'Silver1.06', 'Silver0.9', 'Silver0.9IQR'.")
+  }
+  kde <- density(x, bw = h, n = 2^20)
+  fx <- kde$y
+  x_vals <- kde$x
+  dx <- diff(x_vals)[1]
+  Fx <- cumsum(fx) * dx
+  Fx <- Fx / max(Fx)
+  inv_cdf <- approxfun(Fx, x_vals, rule = 2)
+  P0.5 <- inv_cdf(0.5)
+  P0.99865 <- inv_cdf(0.99865)
+
+  Ppu <- (usl_val - P0.5) / (P0.99865 - P0.5)
+
+  df_result <- data.frame(
+    Ppu = round(Ppu, 3),
+    P0.5 = round(P0.5, 3),
+    P0.99865 = round(P0.99865, 3),
+    N = n,
+    Sample_SD = round(s, 3),
+    Bandwidth_Method = bw_method,
+    Bandwidth_Value = round(h, 5)
+  )
+
+  return(df_result)
+}
+
+```
+# 5.2 Tradition Ppu for each subgroup and the minmal as the CQA's Ppu
+
 ```{r Ppu_SWWC_KDEDP}
 #| echo: False
 #| message: False
@@ -714,7 +784,7 @@ data_clean <- data %>%
   return(output)
 }
 ```
-# 5.2 Tradition Ppu for each subgroup and the minmal as the 1 to 3 CQAs' Ppu
+# 5.3 Tradition Ppu for each subgroup and the minmal as the 1 to 3 CQAs' Ppu
 
 ```{r Ppu_SWWC_KDEDP_Overall}
 #| echo: False
@@ -781,34 +851,67 @@ Ppu_SWWC_KDEDP_Overall <- function(
 #| echo: False
 #| message: False
 #| warning: False
-#| tbl-cap: Subgroup of DAR with USL=122.2 ug/swab
+#| tbl-cap: Ppu of Subgroup of DAR with USL=122.2 ug/swab Using USL-normalization and USL_Pct=100
 #| label: tbl-KDEDPonUSLND122
-SWWC122_KDEDPonUSLND <- Ppu_KDEDPonUSLND(data=Eq_DAR_122, Residue=DAR, USL=USL)
-colnames(SWWC122_KDEDPonUSLND ) <- paste0("**", colnames(SWWC122_KDEDPonUSLND ), "**")
-kable(SWWC122_KDEDPonUSLND )
+DAR122_KDEDPonUSLND <- Ppu_KDEDPonUSLND(data=Eq_DAR_122, Residue=DAR, USL=USL)
+colnames(DAR122_KDEDPonUSLND ) <- paste0("**", colnames(DAR122_KDEDPonUSLND ), "**")
+kable(DAR122_KDEDPonUSLND )
 ```
+```{r Ppu_KDEDP_122_2}
+#| echo: False
+#| message: False
+#| warning: False
+#| tbl-cap: Ppu of Subgroup of DAR with USL=122.2 ug/swab by KDEDP Using USL=122.2
+#| label: tbl-KDEDP122
+DAR122_KDEDP <- Ppu_KDEDP(data=Eq_DAR_122, Residue=DAR, USL=USL)
+colnames(DAR122_KDEDP ) <- paste0("**", colnames(DAR122_KDEDP ), "**")
+kable(DAR122_KDEDP )
+```
+
 ```{r Ppu_KDEDPonUSLND_169_7}
 #| echo: False
 #| message: False
 #| warning: False
-#| tbl-cap: Subgroup of DAR with USL=169.7 ug/swab
+#| tbl-cap: Ppu of Subgroup of DAR with USL=169.7 Using USL-normalization and USL_Pct=100
 #| label: tbl-KDEDPonUSLND169
-SWWC169_KDEDPonUSLND <- Ppu_KDEDPonUSLND(data=Eq_DAR_169, Residue=DAR, USL=USL)
-colnames(SWWC169_KDEDPonUSLND ) <- paste0("**", colnames(SWWC169_KDEDPonUSLND ), "**")
-kable(SWWC169_KDEDPonUSLND )
+DAR169_KDEDPonUSLND <- Ppu_KDEDPonUSLND(data=Eq_DAR_169, Residue=DAR, USL=USL)
+colnames(DAR169_KDEDPonUSLND ) <- paste0("**", colnames(DAR169_KDEDPonUSLND ), "**")
+kable(DAR169_KDEDPonUSLND )
+```
+
+```{r Ppu_KDEDP_169}
+#| echo: False
+#| message: False
+#| warning: False
+#| tbl-cap: Ppu of Subgroup of DAR with USL=169.7 ug/swab by KDEDP Using USL=169.7
+#| label: tbl-KDEDP169
+DAR169_KDEDP <- Ppu_KDEDP(data=Eq_DAR_169, Residue=DAR, USL=USL)
+colnames(DAR169_KDEDP ) <- paste0("**", colnames(DAR169_KDEDP ), "**")
+kable(DAR169_KDEDP )
 ```
 ```{r Ppu_KDEDPonUSLND_20}
 #| echo: False
 #| message: False
 #| warning: False
-#| tbl-cap: Subgroup of DAR with USL=20 ug/swab
+#| tbl-cap: Ppu of Subgroup of DAR with USL=20 ug/swab Using USL-normalization and USL_Pct=100
 #| label: tbl-KDEDPonUSLND20
-SWWC20_KDEDPonUSLND <- Ppu_KDEDPonUSLND(data=Eq_DAR_20, Residue=DAR, USL=USL)
-colnames(SWWC20_KDEDPonUSLND ) <- paste0("**", colnames(SWWC20_KDEDPonUSLND ), "**")
-kable(SWWC20_KDEDPonUSLND )
+DAR20_KDEDPonUSLND <- Ppu_KDEDPonUSLND(data=Eq_DAR_20, Residue=DAR, USL=USL)
+colnames(DAR20_KDEDPonUSLND ) <- paste0("**", colnames(DAR20_KDEDPonUSLND ), "**")
+kable(DAR20_KDEDPonUSLND )
 ```
+```{r Ppu_KDEDP_20}
+#| echo: False
+#| message: False
+#| warning: False
+#| tbl-cap: Ppu of Subgroup of DAR with USL=20 ug/swab by KDEDP Using USL=20
+#| label: tbl-KDEDP20
+DAR20_KDEDP <- Ppu_KDEDP(data=Eq_DAR_20, Residue=DAR, USL=USL)
+colnames(DAR20_KDEDP ) <- paste0("**", colnames(DAR20_KDEDP ), "**")
+kable(DAR20_KDEDP )
+```
+
 # 6.2 Ppu of DAR by the minimal of each subgroup (subgroup wise worst case)
-```{r SWWC_Ppu}
+```{r Ppu_SWWC_DAR}
 #| echo: False
 #| message: False
 #| warning: False
@@ -868,7 +971,12 @@ SWWC_KDEDP_Overall <- Ppu_SWWC_KDEDP_Overall(
     data1 = Eq_DAR, Residue1 = DAR, USL1 = USL,
     BW = "Silver1.06")
 colnames(SWWC_KDEDP_Overall ) <- paste0("**", colnames(SWWC_KDEDP_Overall ), "**")
-kable(SWWC_KDEDP_Overall)
+
+
+kable(
+  SWWC_KDEDP_Overall)
+
+
 ```
 # 8.2 Overall Ppu by CQAWWC (CQA wise worst case)
 
@@ -926,25 +1034,8 @@ kable(CQAWWC_Model)
 
 CQAWP_Model <- CQAWP_BAKDEDPonUSLND_CVStage3Monitoring(data1=Eq_DAR, Residue1=DAR, USL1=USL,Fiscal_Year1=Fiscal_Year,data2=Eq_CAR, Residue2=CAR, USL2=USL,Fiscal_Year2=Fiscal_Year,
 data3=Eq_Mic, Residue3=Mic, USL3=USL,Fiscal_Year3=Fiscal_Year,Time_cut=2025, initial_boot = 1000, seed=1234)
-# colnames(CQAWP_Model) <- paste0("**", colnames(CQAWP_Model), "**")
-# kable(CQAWP_Model)
-# kable(CQAWP_Model, 
-#        format = "latex", booktabs = TRUE, longtable = TRUE, caption = "Monitoring Results of the Cleaning Process for Equipment A by CQAWWC-BAKDEDPonUSLND Model", row.names = FALSE) %>%
-#   kable_styling(font_size = 9, position = "center", latex_options = c("scale_down", "striped", "hold_position"))
+colnames(CQAWP_Model) <- paste0("**", colnames(CQAWP_Model), "**")
 
-
-library(knitr)
-library(kableExtra)
-
-# Bold column names for LaTeX
-colnames(CQAWP_Model) <- paste0("\\textbf{", colnames(CQAWP_Model), "}")
-
-kable(CQAWP_Model, 
-      format = "latex", booktabs = TRUE, longtable = TRUE, 
-      caption = "Monitoring Results of the Cleaning Process for Equipment A by CQAWWC-BAKDEDPonUSLND Model", 
-      row.names = FALSE) %>%
-  kable_styling(font_size = 9, position = "center", 
-                latex_options = c("scale_down", "striped", "hold_position")) %>%
-  column_spec(1, bold = TRUE, border_right = TRUE, color = "black", background = "grey")
+kable(CQAWP_Model )
 
 ```
