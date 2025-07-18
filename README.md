@@ -13,7 +13,7 @@
 ## Traditional Ppu  
 7) For one CQA:
    Method 1: Split the data into several subgroup and use Ppu_KDEDP to generate the sugroup's Ppu by KDEDP (No USL-Normalization)
-   Method 2: Ppu_SWWC_KDEDP generate the worst case Ppu for from all its subgroups. Note it uses Ppu_KDEDPonUSLND. This is the traditional method. it represents the CQA's Ppu.
+   Method 2: Ppu_SWWC_KDEDP generate the worst case Ppu  from all its subgroups. Note it uses Ppu_KDEDPonUSLND to calculate subgroup's Ppu because Ppu is an invariant (so using Ppu_KDEDP or Ppu_KDEDPonUSLND would generate the same output). This is the traditional method. it represents the CQA's Ppu.
    For 1 to 3 CQAs: Ppu_SWWC_KDEDP_overall generte the worst case Ppu for all CQA, i.e., it represent the overall Ppu of the cleaning provess.
 
 ## Bandwidth Function 
