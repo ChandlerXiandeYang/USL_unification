@@ -73,9 +73,7 @@ This adjustment provides more accurate density estimation and better alignment w
 
 ---
 
-All functions in the code allow manual input of the bandwidth `h`.  
-If you want to compare results with JMP or other software, you can manually set `h`.  
-For example, setting `h = 2.8809` for Equipment DAR will produce results from the R code that exactly match those from JMP.
+All functions in the code allow manual input of the bandwidth `h` because our code already considered this case.
 
 ---
 
