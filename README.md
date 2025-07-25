@@ -58,21 +58,14 @@ This section is for users who want to understand the functions or apply them in 
 
 Although JMP claims its bandwidth formula is:
 
-
-
-
+```r
 h <- switch(BW,
-                "Silver1.06" = 1.06 * s / n^(1/5),
-                "Silver0.9" = 0.9 * s / n^(1/5),
-                "Silver0.9IQR" = {
-                  iqr_val <- IQR(x)
-                  sigma <- min(s, iqr_val / 1.34)
-                  0.9 * sigma / n^(1/5)
-                })
-All function's h can be input by manually. If you want to compare with JMP or others, you can manually input. For example, if we input h=2.8809, then for Equipment DAR,
-the value from my R code is exactly the same as in JMP.
-
-## Data Permission 
-Almost all functions here are used in the manuscript. The data here are simplified by removing critical information and then got approval from company.
-
-Enjoy the code and the logic!!!
+  "Silver1.06" = 1.06 * s / n^(1/5),
+  "Silver0.9" = 0.9 * s / n^(1/5),
+  "Silver0.9IQR" = {
+    iqr_val <- IQR(x)
+    sigma <- min(s, iqr_val / 1.34)
+    0.9 * sigma / n^(1/5)
+  }
+)
+```
