@@ -91,3 +91,4 @@ h <- switch(BW,
   }
 )
 ```
+We will revise our R package "CleaningValidation" once all methodologies are recognized by prctioners and regulatory authorities. At present, our R package does not fully use this manuscript's methods.
