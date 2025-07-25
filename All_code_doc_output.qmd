@@ -1,7 +1,7 @@
 ---
 title: "SWWC_CQAWWC_CQAWP"
 author: Xiande Yang, Wendy Lou, and Mohamed Chan
-format: pdf
+format: docx
 editor: visual
 ---
 
