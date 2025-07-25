@@ -21,7 +21,7 @@ This section is for users who want to understand the functions or apply them in 
 
 ## 📏 USL-Normalization Functions
 
-### For a single CQA using USL-normalization method (Ppu_KDEDPonUSLND):
+### A single CQA uses Ppu_KDEDPonUSLND method:
 - `Ppu_KDEDPonUSLND`: Calculates Ppu using USL-normalized data.
 - `Ppu_BAKDEDPonUSLND`: Calculates Ppu and its 95% confidence interval using bootstrap.
 
