@@ -51,7 +51,6 @@ CQAWWC_BAKDEDPonUSLND_CVStage3Monitoring <- function(
     TrainingData3 <- NULL
     TestingData3 <- NULL
   }
-  
   if (is.null(CIL) || CIL < 1) {
     ppu_ci_obj <- Ppu_CQAWWC_BAKDEDPonUSLND(
       data1 = TrainingData1, Residue1 = {{ Residue1 }}, USL1 = {{ USL1 }},
@@ -93,20 +92,16 @@ CQAWWC_BAKDEDPonUSLND_CVStage3Monitoring <- function(
       
     )
   }
-  
   CombinedData1 <- bind_rows(TrainingData1, TestingData1)
   CombinedData2 <- if (!is.null(TrainingData2)) bind_rows(TrainingData2, TestingData2) else NULL
   CombinedData3 <- if (!is.null(TrainingData3)) bind_rows(TrainingData3, TestingData3) else NULL
-  
   testing_ppu_result <- Ppu_CQAWWC_KDEDPonUSLND(
     data1 = CombinedData1, Residue1 = {{ Residue1 }}, USL1 = {{ USL1 }},
     data2 = CombinedData2, Residue2 = {{ Residue2 }}, USL2 = {{ USL2 }},
     data3 = CombinedData3, Residue3 = {{ Residue3 }}, USL3 = {{ USL3 }},
     BW = BW
   )
-  
   Testing_Ppu <- testing_ppu_result$Ppu
-  
   decision <- if (Testing_Ppu >= CIL) {
     "Cleaning process is capable."
   } else if (Testing_Ppu >= 1 && Testing_Ppu < CIL) {
@@ -114,14 +109,11 @@ CQAWWC_BAKDEDPonUSLND_CVStage3Monitoring <- function(
   } else {
     "Cleaning process is NOT capable."
   }
-  # Return as one-row data.frame, keep character columns as character (stringsAsFactors=FALSE)
   output <- data.frame(
     Ppu_training = ppu_ci_obj$Ppu,
     Ppu_threshold = CIL,
     Ppu_monitoring = Testing_Ppu,
     decision = decision
-    
   )
   return(output)
 }
-
