@@ -37,9 +37,7 @@ This section is for users who want to understand the functions or apply them in 
 - **Model 1**: Combines 1 + 2 + `CQAWWC_KDEDPonUSLND_CVStage3Monitoring`
 - **Model 2**: Combines 1 + 3 + `CQAWWC_KDEDPonUSLND_CVStage3Monitoring`
 
-> **Note:** Bootstrap uses 1,000 iterations by default. If the confidence interval length (CIL) is less than 1 during training, it switches to 10,000 iterations.
->  
-> Bandwidth (`BW`) options include: `Silver1.06`, `Silver0.9`, `Silver0.9IQR`, or user-defined.
+> **Note:** Bootstrap uses 1,000 iterations by default. If the confidence interval length (CIL) is less than 1 during training, it switches to 10,000 iterations. Bandwidth (`BW`) options include: `Silver1.06`, `Silver0.9`, `Silver0.9IQR`, or user-defined.
 
 ---
 
