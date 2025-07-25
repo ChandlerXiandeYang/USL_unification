@@ -1,38 +1,65 @@
-# How to Use the Code to Verify the Ouput in the Manuscript?
+# 📘 How to Use the Code to Verify the Output in the Manuscript
 
-The file "Code_and_its_output_for_the_manuscript.qmd" contains all code for the manuscript "Specification Limit Normalization for Nonparametric Process Capability Analysis and Its Applciation in Cleaning Validation with AI-Enabled Monitoring Models".
+The file `Code_and_its_output_for_the_manuscript.qmd` contains all the code used in the manuscript titled:
 
-The following is the steps to generate outputs from the code.
+**"Specification Limit Normalization for Nonparametric Process Capability Analysis and Its Application in Cleaning Validation with AI-Enabled Monitoring Models."**
 
-1) Download the data from the folder named "Equipment A".
-2) Download the file named "Code_and_its_output_for_the_manuscript.qmd".
-3) Change the path in the file "Code_and_its_output_for_the_manuscript.qmd" to the path you stored the downloaded data and then run "code and its output for muanscript.qmd" in RStudio or use quarto_render() in R.
-4) The outputs are 15 tables named Table 1 to Table 15. If you add 1 to the number of each table, you get the table in the manuscript.
-   
-# How to Use These Functions? 
+## 🔧 Steps to Reproduce the Output
 
-The following is for users who want to understand those functions or want to apply it in business operation.
+1. **Download the data** from the folder named **"Equipment A."**
+2. **Download the file** `Code_and_its_output_for_the_manuscript.qmd`.
+3. **Update the file path** in the `.qmd` file to reflect the location where you saved the data.
+4. **Run the file** in RStudio or use the `quarto::quarto_render()` function in R.
+5. The output will include **15 tables** labeled Table 1 to Table 15.  
+   > **Note:** The tables in the manuscript are numbered one higher than those generated (i.e., Table 1 in the code corresponds to Table 2 in the manuscript).
 
-## USL-Normalization
-1) For one CQA: Ppu_KDEDPonUSLND generates the USL-normalized data's Ppu. Ppu_BAKDEDPonUSLND generates the Ppu and its 95% confidence interval with USL-normalized data.
-2) For 1 to 3 CQAs: CQAWWC_KDEDPonUSLND generate CQA-wise worst case Ppu for 1, 2, or 3 CQA-- DAR, CAR, and Mic using USL-normalized data. CQAWWC_BAKDEDPonUSLND generates both Ppu and 95% confidence interval by bootstrap iteration.
-3) For 1 to 3 CQAs, CQAWP_KDEDPonUSLND generate CQA-wise pooled Ppu for 1, 2, or 3 CQA-- DAR, CAR, or Mic using USL-normalized data. CQAWP_BAKDEDPonUSLND generates both Ppu and 95% confidence interval by bootstrap iteration.
-4) Monitoring Model 1: 1)+2)+CQAWWC_KDEDPonUSLND_CVStage3Monitoring
-5) Monitoring Model 2: 1)+3)+CQAWWC_KDEDPonUSLND_CVStage3Monitoring
+---
 
- Note:  Bootstrap 1000 iterations but if CIL<1, in the training stage, it will change to 10000 iterations. Bandwidth BW can be Silver1.06, Silver0.9, Silver0.9IQR, or be set by yourself. 
-   
-## Traditional Ppu  
+# 🧠 How to Use the Functions
 
-7) For one CQA:
-   Method 1: Split the data into several subgroup and use Ppu_KDEDP to generate the sugroup's Ppu by KDEDP method (No USL-Normalization)
-   Method 2: Ppu_SWWC_KDEDP generate the worst case Ppu  from all its subgroups. Note it uses Ppu_KDEDPonUSLND to calculate subgroup's Ppu because Ppu is an invariant (so using Ppu_KDEDP or Ppu_KDEDPonUSLND would generate the same output). This is the traditional method. It represents the CQA's Ppu.
-   For 1 to 3 CQAs: Ppu_SWWC_KDEDP_overall generte the worst case Ppu for all CQA, i.e., it represents the overall Ppu of the cleaning provess.
+This section is for users who want to understand the functions or apply them in business operations.
 
-## Bandwidth Function 
+## 📏 USL-Normalization Functions
 
-JMP says its bandwidth is bw=0.9s/n^{1/5} and s is the uncoorrected sample standard deviation (i.e. divided by n but not n-1), and the grid=100.
-However, it is not the case. I found bw=1.06s/n^{1/5} and s is the corrected sample standard deviation, and the grid should be much larger than grid=100. So, I used 2^15.
+### For a single CQA:
+- `Ppu_KDEDPonUSLND`: Calculates Ppu using USL-normalized data.
+- `Ppu_BAKDEDPonUSLND`: Calculates Ppu and its 95% confidence interval using bootstrap.
+
+### For 1 to 3 CQAs (DAR, CAR, Mic):
+- `CQAWWC_KDEDPonUSLND`: Computes CQA-wise worst-case Ppu.
+- `CQAWWC_BAKDEDPonUSLND`: Computes Ppu and 95% CI using bootstrap.
+
+### CQA-wise Pooled Ppu:
+- `CQAWP_KDEDPonUSLND`: Computes pooled Ppu for 1–3 CQAs.
+- `CQAWP_BAKDEDPonUSLND`: Computes pooled Ppu and 95% CI using bootstrap.
+
+### Monitoring Models:
+- **Model 1**: Combines (1) + (2) + `CQAWWC_KDEDPonUSLND_CVStage3Monitoring`
+- **Model 2**: Combines (1) + (3) + `CQAWWC_KDEDPonUSLND_CVStage3Monitoring`
+
+> **Note:** Bootstrap uses 1,000 iterations by default. If the confidence interval length (CIL) is less than 1 during training, it switches to 10,000 iterations.  
+> Bandwidth (`BW`) options include: `Silver1.06`, `Silver0.9`, `Silver0.9IQR`, or user-defined.
+
+---
+
+## 📊 Traditional Ppu Methods
+
+### For a single CQA:
+- **Method 1**: Split data into subgroups and use `Ppu_KDEDP` (no USL normalization).
+- **Method 2**: Use `Ppu_SWWC_KDEDP` to compute worst-case Ppu across subgroups.  
+  > Note: This uses `Ppu_KDEDPonUSLND` internally, as Ppu is invariant to normalization.
+
+### For 1 to 3 CQAs:
+- `Ppu_SWWC_KDEDP_overall`: Computes worst-case Ppu across all CQAs, representing the overall cleaning process capability.
+
+---
+
+## 📐 Bandwidth Function Clarification
+
+Although JMP claims its bandwidth formula is:
+
+
+
 
 h <- switch(BW,
                 "Silver1.06" = 1.06 * s / n^(1/5),
