@@ -1,5 +1,18 @@
+# How to use the code to verify the ouput in the Manuscript?
 
+All code files are for the manuscript "Specification Limit Normalization for Nonparametric Process Capability Analysis and Its Applciation in Cleaning Validation with AI-Enabled Monitoring Models"
+The following is the steps to generate outputs from the code.
+
+1) Users needs to download data from the folder named Equipment A
+2) Download the file named "code and its output for muanscript.qmd" 
+3) Change the path in "code and its output for muanscript.qmd" and then run "code and its output for muanscript.qmd" in R.
+4) The outputs are 15 tables named Table 1 to Table 15. If you add 1 to the number of each table, you get the table in the manuscript.
+
+
+   
 # How to use these functions? 
+
+The following is for users who want to understand those functions or want to apply it in business operation.
 
 ## USL-Normalization
 1) For one CQA: Ppu_KDEDPonUSLND generates the USL-normalized data's Ppu. Ppu_BAKDEDPonUSLND generates the Ppu and its 95% confidence interval with USL-normalized data.
