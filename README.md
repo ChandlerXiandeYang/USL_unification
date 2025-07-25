@@ -1,6 +1,6 @@
 # 📘 1 How to Use the Code to Verify the Output in the Manuscript
 
-The file `Code_and_its_output_for_the_manuscript.qmd` contains all the code used in the manuscript titled:
+The file `CODE_AND_its_output_for_the_manuscript.qmd` contains all the code used in the manuscript titled:
 
 **"Specification Limit Normalization for Nonparametric Process Capability Analysis and Its Application in Cleaning Validation with AI-Enabled Monitoring Models."**
 
@@ -8,7 +8,7 @@ The file `Code_and_its_output_for_the_manuscript.qmd` contains all the code used
 
 1). **Download the data** from the folder named **"Equipment A."**
 
-2). **Download the file** `Code_and_its_output_for_the_manuscript.qmd`.
+2). **Download the file** `CODE_AND_its_output_for_the_manuscript.qmd`.
 
 3). **Update the file path** in the `.qmd` file to reflect the location where you saved the data.
 
