@@ -56,7 +56,27 @@ This section is for users who want to understand the functions or apply them in 
 
 ## 📐 Bandwidth Function Clarification
 
-Although JMP claims its bandwidth formula is:
+
+
+Although **JMP** claims its bandwidth formula is: BW = 0.9 * s / n^(1/5)
+where:
+- `s` is the **uncorrected** sample standard deviation (i.e., divided by `n`, not `n - 1`)
+- the **grid size** is set to 100
+- However, this is **not the case** based on our findings. We observed that:
+
+- The actual bandwidth formula should be: BW = 1.06 * s / n^(1/5)
+- where `s` is the **corrected** sample standard deviation (i.e., divided by `n - 1`)
+
+- The grid size should be **much larger** than 100. We recommend using: grid size = 2^15
+This adjustment provides more accurate density estimation and better alignment with theoretical expectations.
+
+---
+
+All functions in the code allow manual input of the bandwidth `h`.  
+If you want to compare results with JMP or other software, you can manually set `h`.  
+For example, setting `h = 2.8809` for Equipment DAR will produce results from the R code that exactly match those from JMP.
+
+---
 
 ```r
 h <- switch(BW,
