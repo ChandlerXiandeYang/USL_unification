@@ -4,7 +4,7 @@ The file `CODE_AND_its_output_for_the_manuscript.qmd` contains all the code used
 
 **"Specification Limit Normalization for Nonparametric Process Capability Analysis and Its Application in Cleaning Validation with AI-Enabled Monitoring Models."**
 
-** If you just verify the output or the code, use `CODE_AND_its_output_for_the_manuscript.qmd` and `CODE_AND_its_output_for_the_manuscript.pdf` only.**
+**If you just verify the output or the code, use `CODE_AND_its_output_for_the_manuscript.qmd` and `CODE_AND_its_output_for_the_manuscript.pdf` only.**
 
 ##  Steps to Reproduce the Output
 
