@@ -4,8 +4,8 @@ All code files are for the manuscript "Specification Limit Normalization for Non
 
 The following is the steps to generate outputs from the code.
 
-1) Download the data from the folder named "Equipment A"
-2) Download the file named "code and its output for muanscript.qmd" 
+1) Download the data from the folder named "Equipment A".
+2) Download the file named "code and its output for muanscript.qmd".
 3) Change the path in the file "code and its output for muanscript.qmd" to the path you stored the downloaded data and then run "code and its output for muanscript.qmd" in RStudio or use quarto_render() in R.
 4) The outputs are 15 tables named Table 1 to Table 15. If you add 1 to the number of each table, you get the table in the manuscript.
    
