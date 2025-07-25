@@ -19,11 +19,11 @@ The file `Code_and_its_output_for_the_manuscript.qmd` contains all the code used
    > **Note:** The tables in the manuscript are numbered one higher than those generated (i.e., Table 1 in the code corresponds to Table 2 in the manuscript).
 ---
 
-# 🧠 2 How to Use the Functions
+# 🧠 2 How to Use the Functions in Business Operation
 
 This section is for users who want to understand the functions or apply them in business operations.
 
-## 📏 2.1  USL-Normalization Functions
+## 📏 2.1  USL-Normalization Functions 
 
 ### 2.1.1 A single CQA uses Ppu_KDEDPonUSLND method:
 - `Ppu_KDEDPonUSLND`: Calculates Ppu using USL-normalized data.
