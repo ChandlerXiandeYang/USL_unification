@@ -1,6 +1,7 @@
 # How to use the code to verify the ouput in the Manuscript?
 
-All code files are for the manuscript "Specification Limit Normalization for Nonparametric Process Capability Analysis and Its Applciation in Cleaning Validation with AI-Enabled Monitoring Models"
+All code files are for the manuscript "Specification Limit Normalization for Nonparametric Process Capability Analysis and Its Applciation in Cleaning Validation with AI-Enabled Monitoring Models".
+
 The following is the steps to generate outputs from the code.
 
 1) Users needs to download data from the folder named Equipment A
