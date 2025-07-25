@@ -6,11 +6,11 @@ The file `Code_and_its_output_for_the_manuscript.qmd` contains all the code used
 
 ## 🔧 Steps to Reproduce the Output
 
-1. **Download the data** from the folder named **"Equipment A."**
-2. **Download the file** `Code_and_its_output_for_the_manuscript.qmd`.
-3. **Update the file path** in the `.qmd` file to reflect the location where you saved the data.
-4. **Run the file** in RStudio or use the `quarto::quarto_render()` function in R.
-5. The output will include **15 tables** labeled Table 1 to Table 15.  
+1). **Download the data** from the folder named **"Equipment A."**
+2). **Download the file** `Code_and_its_output_for_the_manuscript.qmd`.
+3). **Update the file path** in the `.qmd` file to reflect the location where you saved the data.
+4). **Run the file** in RStudio or use the `quarto::quarto_render()` function in R.
+5). The output will include **15 tables** labeled Table 1 to Table 15.  
    > **Note:** The tables in the manuscript are numbered one higher than those generated (i.e., Table 1 in the code corresponds to Table 2 in the manuscript).
 ---
 
