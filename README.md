@@ -21,15 +21,15 @@ This section is for users who want to understand the functions or apply them in 
 
 ## 📏 USL-Normalization Functions
 
-### For a single CQA:
+### For a single CQA using USL-normalization method (Ppu_KDEDPonUSLND):
 - `Ppu_KDEDPonUSLND`: Calculates Ppu using USL-normalized data.
 - `Ppu_BAKDEDPonUSLND`: Calculates Ppu and its 95% confidence interval using bootstrap.
 
-### CQAWWC is CQA-wise worst case overall Ppu assessing a cleaning process who has 1 to 3 CQAs (DAR, CAR, Mic):
+### CQAWWC_KDEDPonUSLDN is CQA-wise worst case overall Ppu assessing a cleaning process who has 1 to 3 CQAs (DAR, CAR, Mic):
 - `CQAWWC_KDEDPonUSLND`: Computes CQA-wise worst-case Ppu.
 - `CQAWWC_BAKDEDPonUSLND`: Computes Ppu and 95% CI using bootstrap.
 
-### CQAWP is CQA-wise pooling case overall Ppu assessing a cleaning process who has 1 to 3 CQAs (DAR, CAR, Mic):
+### CQAWP_KDEDPonUSLND is CQA-wise pooling case overall Ppu assessing a cleaning process who has 1 to 3 CQAs (DAR, CAR, Mic):
 - `CQAWP_KDEDPonUSLND`: Computes pooled Ppu for 1–3 CQAs.
 - `CQAWP_BAKDEDPonUSLND`: Computes pooled Ppu and 95% CI using bootstrap.
 
