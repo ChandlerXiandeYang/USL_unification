@@ -68,6 +68,7 @@ where:
 - where `s` is the **corrected** sample standard deviation (i.e., divided by `n - 1`)
 
 - The grid size should be **much larger** than 100. We recommend using: grid size = 2^15
+  
 This adjustment provides more accurate density estimation and better alignment with theoretical expectations.
 
 ---
