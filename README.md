@@ -19,7 +19,7 @@ The file `CODE_AND_its_output_for_the_manuscript.qmd` contains all the code used
 
    > **Note:** The tables in the manuscript are numbered one higher than those generated (i.e., Table 1 in the code corresponds to Table 2 in the manuscript).
  
-**If you just verify the output or the code, use `CODE_AND_its_output_for_the_manuscript.qmd` and `CODE_AND_its_output_for_the_manuscript.pdf` only.**
+# **If you just verify the output or the code, use `CODE_AND_its_output_for_the_manuscript.qmd` and `CODE_AND_its_output_for_the_manuscript.pdf` only.**
 
 ---
 
