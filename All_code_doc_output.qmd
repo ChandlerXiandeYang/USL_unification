@@ -1,32 +1,33 @@
 ---
 title: "SWWC_CQAWWC_CQAWP"
-author: Y.X.  L.W. C.M.
-format: docx
+author: Xiande Yang, Wendy Lou, and Mohamed Chan
+format: pdf
 editor: visual
 ---
 
 # 1 R Package and Data Loading
 
+All functions outputs are in data frame format of one row record. If users want to display bootstrap output, you need to rewrite the output in list format.
+
 ```{r environment_and_data_loading}
-#| echo: False
+#| echo: TRUE
 #| message: False
 #| warning: False
 #| results: hide
 package_vector <- c("quarto", "rmarkdown", "shiny", "rlang", "tidyr", "DBI", "odbc", "openxlsx", "dplyr", "knitr", 
                     "stringr", "ggplot2", "forcats", "readxl", "formattable", "easyanova", "VCA", "qcc", "lubridate", 
                     "kableExtra", "lme4", "AER", "dunn.test", "boot", "lmtest", "gridExtra", "magick", "gt", 
-                    "webshot2", "chromote",  "DiagrammeR", "DiagrammeRsvg", "rsvg")
+                    "webshot2", "chromote",  "DiagrammeR", "DiagrammeRsvg", "rsvg", "rlang")
 
-#"CleaningValidation",
+# "CleaningValidation", we do not use this package for this manuscript
+
 check_and_install <- function(pkg) {
   if (!require(pkg, character.only = TRUE)) {
     install.packages(pkg, dependencies = TRUE, repos = "https://cran.r-project.org")
     require(pkg, character.only = TRUE)
   }
 }
-
 lapply(package_vector, require, character.only=T)
-
 Eq_DAR <- read_excel("C:\\Users\\xyang1\\AAPSPharmSciTech\\USL_unification-main\\Equipment A\\Eq_DAR.xlsx")
 Eq_CAR <- read_excel("C:\\Users\\xyang1\\AAPSPharmSciTech\\USL_unification-main\\Equipment A\\Eq_CAR.xlsx")
 Eq_Mic <- read_excel("C:\\Users\\xyang1\\AAPSPharmSciTech\\USL_unification-main\\Equipment A\\Eq_Mic.xlsx")
@@ -34,14 +35,12 @@ Eq_DAR_20 <- read_excel("C:\\Users\\xyang1\\AAPSPharmSciTech\\USL_unification-ma
 Eq_DAR_169 <- read_excel("C:\\Users\\xyang1\\AAPSPharmSciTech\\USL_unification-main\\Equipment A\\Eq_DAR_169.xlsx")
 Eq_DAR_122 <- read_excel("C:\\Users\\xyang1\\AAPSPharmSciTech\\USL_unification-main\\Equipment A\\Eq_DAR_122.xlsx")
 ```
-
-# 2.1 Ppu for one data with USL-normalization
+# 2.1 Ppu for one data set with USL-normalization
 
 ```{r Ppu_KDEDPonUSLND}
-#| echo: False
+#| echo: TRUE
 #| message: False
 #| warning: False
-
 Ppu_KDEDPonUSLND <- function(data, Residue, USL, BW = "Silver1.06") {
   library(dplyr)
   library(rlang)
@@ -49,7 +48,7 @@ Ppu_KDEDPonUSLND <- function(data, Residue, USL, BW = "Silver1.06") {
   usl_quo <- enquo(USL)
   data_clean <- data %>%
     filter(!is.na(!!residue_quo), !is.na(!!usl_quo)) %>%
-    mutate(Residue_Pct = (!!residue_quo / !!usl_quo) * 100)
+    mutate(Residue_Pct = (!!residue_quo / !!usl_quo) * 100) # USL-normalization step
   
   if (nrow(data_clean) == 0) stop("No valid rows remaining after removing NAs in Residue or USL.")
    x <- data_clean$Residue_Pct
@@ -72,18 +71,16 @@ Ppu_KDEDPonUSLND <- function(data, Residue, USL, BW = "Silver1.06") {
   } else {
     stop("BW must be numeric > 0 or one of: 'Silver1.06', 'Silver0.9', 'Silver0.9IQR'.")
   }
-  
-  kde <- density(x, bw = h, n = 2^20)
+  kde <- density(x, bw = h, n = 2^20) # the default kernel is Gaussian
   fx <- kde$y
   x_vals <- kde$x
   dx <- diff(x_vals)[1]
   Fx <- cumsum(fx) * dx
   Fx <- Fx / max(Fx)
-  inv_cdf <- approxfun(Fx, x_vals, rule = 2)
+  inv_cdf <- approxfun(Fx, x_vals, rule = 2) # we did not use uniroot() which maybe better
   P0.5 <- inv_cdf(0.5)
   P0.99865 <- inv_cdf(0.99865)
   Ppu <- (100 - P0.5) / (P0.99865 - P0.5)
-  
   df_result <- data.frame(
     Ppu = round(Ppu, 3),
     P0.5 = round(P0.5, 3),
@@ -93,42 +90,34 @@ Ppu_KDEDPonUSLND <- function(data, Residue, USL, BW = "Silver1.06") {
     Bandwidth_Method = bw_method,
     Bandwidth_Value = round(h, 5)
   )
-  
   return(df_result)
 }
 ```
-# 2.2 Ppu and confidence interval with bootstrap for one data  with USL-normalization
+# 2.2 Ppu and confidence interval with bootstrap for one data set with USL-normalization
 ```{r Ppu_BAKDEDPonUSLND}
-#| echo: False
+#| echo: TRUE
 #| message: False
 #| fig-pos: 'H'
 #| warning: False
 
 Ppu_BAKDEDPonUSLND <- function(data, Residue, USL, BW = "Silver1.06", n_boot = 1000, conf_level = 0.95, seed = 1234) {
   library(rlang)
-  
   Residue_enquo <- enquo(Residue)
   USL_enquo <- enquo(USL)
-  
   set.seed(seed)
   ppu_full <- Ppu_KDEDPonUSLND(data, !!Residue_enquo, !!USL_enquo, BW)$Ppu
   n <- nrow(data)
-  
   ppu_boot <- numeric(n_boot)
-  
   for (i in seq_len(n_boot)) {
     data_boot <- data[sample(seq_len(n), size = n, replace = TRUE), ]
     ppu_boot[i] <- tryCatch({
       Ppu_KDEDPonUSLND(data_boot, !!Residue_enquo, !!USL_enquo, BW)$Ppu
     }, error = function(e) NA_real_)
   }
-
   ppu_boot <- ppu_boot[!is.na(ppu_boot)]
-  
   alpha <- (1 - conf_level)
   cil <- quantile(ppu_boot, probs = alpha / 2, names = FALSE)
   ciu <- quantile(ppu_boot, probs = 1 - alpha / 2, names = FALSE)
-
   result_df <- data.frame(
     Ppu = ppu_full,
     CI_lower = cil,
@@ -137,14 +126,14 @@ Ppu_BAKDEDPonUSLND <- function(data, Residue, USL, BW = "Silver1.06", n_boot = 1
     n_boot = length(ppu_boot),
     stringsAsFactors = FALSE
   )
-  
   return(result_df)
 }
 ```
+
 # 3.1 Ppu CQAWWC for one to three data  with USL-normalization
 
 ```{r Ppu_CQAWWC_KDEDPonUSLND}
-#| echo: False
+#| echo: TRUE
 #| message: False
 #| fig-pos: 'H'
 #| warning: False
@@ -172,12 +161,11 @@ Ppu_CQAWWC_KDEDPonUSLND <- function(data1, Residue1, USL1,
   
   return(output)
 }
-
 ```
 # 3.2 Ppu CQAWWC with confidence interval for one to three data  with bootstrap and USL-normalization
 
 ```{r Ppu_CQAWWC_BAKDEDPonUSLND}
-#| echo: False
+#| echo: TRUE
 #| message: False
 #| fig-pos: 'H'
 #| warning: False
@@ -190,11 +178,9 @@ Ppu_CQAWWC_BAKDEDPonUSLND <- function(data1, Residue1, USL1,
                                       seed = NULL) {
   library(dplyr)
   library(rlang)
-  
   if (!is.null(seed)) {
     set.seed(seed)
   }
-
   clean_data <- function(data, residue, usl) {
     residue_quo <- enquo(residue)
     usl_quo <- enquo(usl)
@@ -212,8 +198,6 @@ Ppu_CQAWWC_BAKDEDPonUSLND <- function(data1, Residue1, USL1,
                                                 data3_clean, {{Residue3}}, {{USL3}},
                                                 BW = BW)
   point_estimate <- point_estimate_all$Ppu
-  
-
   bootstrap_ppus <- replicate(n_boot, {
     boot_data1 <- data1_clean %>% sample_n(size = nrow(data1_clean), replace = TRUE)
     boot_data2 <- if (!is.null(data2_clean)) data2_clean %>% sample_n(size = nrow(data2_clean), replace = TRUE) else NULL
@@ -227,9 +211,7 @@ Ppu_CQAWWC_BAKDEDPonUSLND <- function(data1, Residue1, USL1,
       res$Ppu 
     }, error = function(e) NA_real_)
   })
-  
   bootstrap_ppus <- na.omit(bootstrap_ppus)
-
   alpha <- 1 - conf_level
   ci_lower <- quantile(bootstrap_ppus, probs = alpha / 2, names = FALSE)
   ci_upper <- quantile(bootstrap_ppus, probs = 1 - alpha / 2, names = FALSE)
@@ -239,15 +221,14 @@ Ppu_CQAWWC_BAKDEDPonUSLND <- function(data1, Residue1, USL1,
     CI_lower = round(ci_lower, 3),
     n_boot = n_boot
   )
-  
   return(df_result)
 }
 
 ```
-# 3.3 Ppu CQAWWC monitoring model with training, CIL, and monitoring
+# 3.3 Ppu CQAWWC monitoring model with training Ppu, monitoring thresholod CIL, and monitoring output Ppu
 
 ```{r CQAWWC_BAKDEDPonUSLND_CVStage3Monitoring}
-#| echo: False
+#| echo: TRUE
 #| message: False
 #| warning: False
 
@@ -304,7 +285,6 @@ CQAWWC_BAKDEDPonUSLND_CVStage3Monitoring <- function(
     TrainingData3 <- NULL
     TestingData3 <- NULL
   }
-  
   if (is.null(CIL) || CIL < 1) {
     ppu_ci_obj <- Ppu_CQAWWC_BAKDEDPonUSLND(
       data1 = TrainingData1, Residue1 = {{ Residue1 }}, USL1 = {{ USL1 }},
@@ -346,20 +326,16 @@ CQAWWC_BAKDEDPonUSLND_CVStage3Monitoring <- function(
       
     )
   }
-  
   CombinedData1 <- bind_rows(TrainingData1, TestingData1)
   CombinedData2 <- if (!is.null(TrainingData2)) bind_rows(TrainingData2, TestingData2) else NULL
   CombinedData3 <- if (!is.null(TrainingData3)) bind_rows(TrainingData3, TestingData3) else NULL
-  
   testing_ppu_result <- Ppu_CQAWWC_KDEDPonUSLND(
     data1 = CombinedData1, Residue1 = {{ Residue1 }}, USL1 = {{ USL1 }},
     data2 = CombinedData2, Residue2 = {{ Residue2 }}, USL2 = {{ USL2 }},
     data3 = CombinedData3, Residue3 = {{ Residue3 }}, USL3 = {{ USL3 }},
     BW = BW
   )
-  
   Testing_Ppu <- testing_ppu_result$Ppu
-  
   decision <- if (Testing_Ppu >= CIL) {
     "Cleaning process is capable."
   } else if (Testing_Ppu >= 1 && Testing_Ppu < CIL) {
@@ -372,7 +348,6 @@ CQAWWC_BAKDEDPonUSLND_CVStage3Monitoring <- function(
     Ppu_threshold = CIL,
     Ppu_monitoring = Testing_Ppu,
     decision = decision
-    
   )
   return(output)
 }
@@ -381,7 +356,7 @@ CQAWWC_BAKDEDPonUSLND_CVStage3Monitoring <- function(
 # 4.1 Ppu CQAWP for one to three data  with USL-normalization
 
 ```{r Ppu_CQAWP_KDEDPonUSLND}
-#| echo: False
+#| echo: TRUE
 #| message: False
 #| fig-pos: 'H'
 #| warning: False
@@ -398,23 +373,18 @@ Ppu_CQAWP_KDEDPonUSLND <- function(data1, Residue1, USL1,
       filter(!is.na(!!residue_quo), !is.na(!!usl_quo)) %>%
       select(Residue = !!residue_quo, USL = !!usl_quo)
   }
-  
   data1_clean <- clean_and_rename(data1, {{Residue1}}, {{USL1}})
-  
   if (!is.null(data2) && !rlang::quo_is_null(rlang::enquo(Residue2)) && !rlang::quo_is_null(rlang::enquo(USL2))) {
     data2_clean <- clean_and_rename(data2, {{Residue2}}, {{USL2}})
   } else {
     data2_clean <- NULL
   }
-  
   if (!is.null(data3) && !rlang::quo_is_null(rlang::enquo(Residue3)) && !rlang::quo_is_null(rlang::enquo(USL3))) {
     data3_clean <- clean_and_rename(data3, {{Residue3}}, {{USL3}})
   } else {
     data3_clean <- NULL
   }
-
   pooled_data <- data1_clean
-  
   if (!is.null(data2_clean)) {
     pooled_data <- bind_rows(pooled_data, data2_clean)
   }
@@ -428,16 +398,13 @@ Ppu_CQAWP_KDEDPonUSLND <- function(data1, Residue1, USL1,
     USL = USL,
     BW = BW
   )
-  
   return(ppu_result)
 }
-
-
 ```
 # 4.2 Ppu CQAWP for one to three data  with bootstrap and USL-normalization
 
 ```{r Ppu_CQAWP_BAKDEDPonUSLND}
-#| echo: False
+#| echo: TRUE
 #| message: False
 #| fig-pos: 'H'
 #| warning: False
@@ -471,7 +438,6 @@ Ppu_CQAWP_BAKDEDPonUSLND <- function(data1, Residue1, USL1,
   USL2_quo <- if (!missing(USL2)) enquo(USL2) else NULL
   Residue3_quo <- if (!missing(Residue3)) enquo(Residue3) else NULL
   USL3_quo <- if (!missing(USL3)) enquo(USL3) else NULL
-  
   bootstrap_ppus <- replicate(n_boot, {
     boot_data1 <- data1_clean %>% sample_n(size = nrow(data1_clean), replace = TRUE)
     boot_data2 <- if (!is.null(data2_clean)) data2_clean %>% sample_n(size = nrow(data2_clean), replace = TRUE) else NULL
@@ -497,12 +463,10 @@ Ppu_CQAWP_BAKDEDPonUSLND <- function(data1, Residue1, USL1,
   )
    return(result_df)
 }
-
-
 ```
 # 4.3 Ppu CQAWP monitoring model with training, CIL, and monitoring
 ```{r CQAWP_BAKDEDPonUSLND_CVStage3Monitoring}
-#| echo: False
+#| echo: TRUE
 #| message: False
 #| warning: False
 CQAWP_BAKDEDPonUSLND_CVStage3Monitoring <- function(
@@ -518,13 +482,10 @@ CQAWP_BAKDEDPonUSLND_CVStage3Monitoring <- function(
     seed = NULL
 ) {
   library(dplyr)
-  
   if (!is.null(seed)) set.seed(seed)
-  
   clean_na_residue <- function(data, residue_col) {
     data %>% filter(!is.na({{ residue_col }}))
   }
-  
   split_by_fiscal_year <- function(data, fiscal_year_col, time_cut) {
     training <- data %>% 
       filter(!is.na({{ fiscal_year_col }})) %>%
@@ -536,7 +497,6 @@ CQAWP_BAKDEDPonUSLND_CVStage3Monitoring <- function(
     
     list(training = training, testing = testing)
   }
-  
   split1 <- split_by_fiscal_year(data1, {{ Fiscal_Year1 }}, Time_cut)
   TrainingData1 <- clean_na_residue(split1$training, {{ Residue1 }})
   TestingData1 <- clean_na_residue(split1$testing, {{ Residue1 }})
@@ -549,7 +509,6 @@ CQAWP_BAKDEDPonUSLND_CVStage3Monitoring <- function(
     TrainingData2 <- NULL
     TestingData2 <- NULL
   }
-  
   if (!is.null(data3)) {
     split3 <- split_by_fiscal_year(data3, {{ Fiscal_Year3 }}, Time_cut)
     TrainingData3 <- clean_na_residue(split3$training, {{ Residue3 }})
@@ -558,7 +517,6 @@ CQAWP_BAKDEDPonUSLND_CVStage3Monitoring <- function(
     TrainingData3 <- NULL
     TestingData3 <- NULL
   }
-  
   if (is.null(CIL) || CIL < 1) {
     ppu_ci_obj <- Ppu_CQAWP_BAKDEDPonUSLND(
       data1 = TrainingData1, Residue1 = {{ Residue1 }}, USL1 = {{ USL1 }},
@@ -569,7 +527,6 @@ CQAWP_BAKDEDPonUSLND_CVStage3Monitoring <- function(
       conf_level = conf_level,
       seed = seed
     )
-    
     if (ppu_ci_obj$CI_lower < 1) {
       message("Initial CI lower bound < 1, increasing bootstrap to ", max_boot)
       ppu_ci_obj <- Ppu_CQAWP_BAKDEDPonUSLND(
@@ -593,26 +550,21 @@ CQAWP_BAKDEDPonUSLND_CVStage3Monitoring <- function(
       data3 = TrainingData3, Residue3 = {{ Residue3 }}, USL3 = {{ USL3 }},
       BW = BW
     )$Ppu
-    
     ppu_ci_obj <- list(
       Ppu = training_ppu,
       CI_lower = CIL
     )
   }
-  
   CombinedData1 <- bind_rows(TrainingData1, TestingData1)
   CombinedData2 <- if (!is.null(TrainingData2)) bind_rows(TrainingData2, TestingData2) else NULL
   CombinedData3 <- if (!is.null(TrainingData3)) bind_rows(TrainingData3, TestingData3) else NULL
-  
   testing_ppu_result <- Ppu_CQAWP_KDEDPonUSLND(
     data1 = CombinedData1, Residue1 = {{ Residue1 }}, USL1 = {{ USL1 }},
     data2 = CombinedData2, Residue2 = {{ Residue2 }}, USL2 = {{ USL2 }},
     data3 = CombinedData3, Residue3 = {{ Residue3 }}, USL3 = {{ USL3 }},
     BW = BW
   )
-  
   Testing_Ppu <- testing_ppu_result$Ppu
-  
   decision <- if (Testing_Ppu >= CIL) {
     "Cleaning process is capable."
   } else if (Testing_Ppu >= 1 && Testing_Ppu < CIL) {
@@ -620,7 +572,6 @@ CQAWP_BAKDEDPonUSLND_CVStage3Monitoring <- function(
   } else {
     "Cleaning process is NOT capable."
   }
-  
   output <- data.frame(
     Ppu_training = ppu_ci_obj$Ppu,
     Ppu_threshold = CIL,
@@ -628,17 +579,16 @@ CQAWP_BAKDEDPonUSLND_CVStage3Monitoring <- function(
     Performance_conclusion = decision,
     stringsAsFactors = FALSE
   )
-  
   return(output)
 }
-
-
 ```
+
 # 5.1 Tradition Ppu by KDEDP (ISO2154-4 Method)
- 
+
+If you want to use this method, you have to split your data to subgroup data sets each has a fixed USL.
 
 ```{r Ppu_KDEDP}
-#| echo: False
+#| echo: TRUE
 #| message: False
 #| warning: False
 Ppu_KDEDP <- function(data, Residue, USL, BW = "Silver1.06") {
@@ -658,8 +608,8 @@ Ppu_KDEDP <- function(data, Residue, USL, BW = "Silver1.06") {
   x <- data_clean$Residue_Val
   usl_val <- data_clean$USL_Val[1]  # Assume constant USL
   n <- length(x)
-  #s <- sqrt(mean((x - mean(x))^2))  
-  s <- sd(x)
+  #s <- sqrt(mean((x - mean(x))^2))  #uncorrected standard deviation. JMP claimed it uses this one
+  s <- sd(x) #corrected standard deviation
   if (is.character(BW)) {
     BW <- match.arg(BW, choices = c("Silver1.06", "Silver0.9", "Silver0.9IQR"))
     h <- switch(BW,
@@ -686,9 +636,7 @@ Ppu_KDEDP <- function(data, Residue, USL, BW = "Silver1.06") {
   inv_cdf <- approxfun(Fx, x_vals, rule = 2)
   P0.5 <- inv_cdf(0.5)
   P0.99865 <- inv_cdf(0.99865)
-
   Ppu <- (usl_val - P0.5) / (P0.99865 - P0.5)
-
   df_result <- data.frame(
     Ppu = round(Ppu, 3),
     P0.5 = round(P0.5, 3),
@@ -698,62 +646,23 @@ Ppu_KDEDP <- function(data, Residue, USL, BW = "Silver1.06") {
     Bandwidth_Method = bw_method,
     Bandwidth_Value = round(h, 5)
   )
-
   return(df_result)
 }
-
 ```
 # 5.2 Tradition Ppu for each subgroup and the minmal as the CQA's Ppu
 
+Ppu_SWWC_KDEDP function digests ONE data set such as DAR, CAR, or Mic (but not all of them). It automatically divides the data into subgroups by USL and then calculate each subgroups Ppu and take the minimal as this data set Ppu.
+
 ```{r Ppu_SWWC_KDEDP}
-#| echo: False
+#| echo: TRUE
 #| message: False
 #| warning: False
-
-# Ppu_SWWC_KDEDP <- function(data, Residue, USL, BW = "Silver1.06") {
-#   library(dplyr)
-# 
-#   # Filter rows with non-NA Residue and USL, and select those columns renamed to fixed names
-#   data_clean <- data %>%
-#     filter(!is.na({{Residue}}), !is.na({{USL}})) %>%
-#     select(Residue = {{Residue}}, USL = {{USL}})
-#   
-#   if (nrow(data_clean) == 0) {
-#     stop("No valid rows after removing NA values in Residue or USL.")
-#   }
-#   
-#   subgroups <- split(data_clean, data_clean$USL)
-#   
-#   ppu_named_vector <- sapply(names(subgroups), function(usl_val) {
-#     sub_df <- subgroups[[usl_val]]
-#     res_values <- sub_df$Residue
-#     
-#     if (length(unique(res_values)) == 1) {
-#       return(100)
-#     } else {
-#       result <- Ppu_KDEDPonUSLND(sub_df, Residue = Residue, USL = USL, BW = BW)
-#       return(result$Ppu)
-#     }
-#   })
-#   
-#   names(ppu_named_vector) <- paste0("Ppu_USL_", names(ppu_named_vector))
-#   
-#   overall_min <- min(ppu_named_vector, na.rm = TRUE)
-#   output <- as.data.frame(as.list(c(Ppu = overall_min, ppu_named_vector)), stringsAsFactors = FALSE)
-#   
-#   return(output)
-# }
-
 Ppu_SWWC_KDEDP <- function(data, Residue, USL, BW = "Silver1.06") {
   library(dplyr)
   library(rlang)
-
   residue_quo <- enquo(Residue)
   usl_quo <- enquo(USL)
-
-  # Filter rows with non-NA Residue and USL, and select those columns renamed to fixed names
-
-
+# Filter rows with non-NA Residue and USL, and select those columns renamed to fixed names
 data_clean <- data %>%
   filter(!is.na(!!residue_quo), !is.na(!!usl_quo)) %>%
   select(Residue = !!residue_quo, USL = !!usl_quo)
@@ -771,23 +680,23 @@ data_clean <- data %>%
     if (length(unique(res_values)) == 1) {
       return(100)
     } else {
-      result <- Ppu_KDEDPonUSLND(sub_df, Residue = Residue, USL = USL, BW = BW)
+  # For the following, we used USL-normalization method. In fact, it can be replaced by PPU_KDEDP(). 
+  # The output is the same since Ppu is an invariant under USL-normalization    
+  result <- Ppu_KDEDPonUSLND(sub_df, Residue = Residue, USL = USL, BW = BW) 
       return(result$Ppu)
     }
   })
-
   names(ppu_named_vector) <- paste0("Ppu_USL_", names(ppu_named_vector))
-
   overall_min <- min(ppu_named_vector, na.rm = TRUE)
   output <- as.data.frame(as.list(c(Ppu = overall_min, ppu_named_vector)), stringsAsFactors = FALSE)
-
   return(output)
 }
 ```
 # 5.3 Tradition Ppu for each subgroup and the minmal as the 1 to 3 CQAs' Ppu
 
+Ppu_SWWC_KDEPDE_Overall digests one to three data sets such as DAR, CAR, or Mic. If we input one dataset, it is the same as the output of Ppu_SWWC_KDEDP. 
 ```{r Ppu_SWWC_KDEDP_Overall}
-#| echo: False
+#| echo: TRUE
 #| message: False
 #| warning: False
 Ppu_SWWC_KDEDP_Overall <- function(
@@ -799,17 +708,13 @@ Ppu_SWWC_KDEDP_Overall <- function(
   library(rlang)
   Residue1_quo <- enquo(Residue1)
   USL1_quo <- enquo(USL1)
-  
   Residue2_quo <- if (!missing(Residue2)) enquo(Residue2) else NULL
   USL2_quo <- if (!missing(USL2)) enquo(USL2) else NULL
-  
   Residue3_quo <- if (!missing(Residue3)) enquo(Residue3) else NULL
   USL3_quo <- if (!missing(USL3)) enquo(USL3) else NULL
-  
   valid_input <- function(data, residue_quo, usl_quo) {
     !is.null(data) && !quo_is_null(residue_quo) && !quo_is_null(usl_quo)
   }
-  
   all_ppus <- c()
   
   if (valid_input(data1, Residue1_quo, USL1_quo)) {
@@ -842,13 +747,14 @@ Ppu_SWWC_KDEDP_Overall <- function(
   
   return(output_df)
 }
-
 ```
 
-# 6.1 Ppu of the three subgroups of DAR by USL normalization (they are equal to each subgrop Ppu in the following section)
+# 6.1 Ppu of the three subgroups of DAR by USL normalization 
+
+They are equal to each subgrop's Ppu in the following section.
 
 ```{r Ppu_KDEDPonUSLND_122_2}
-#| echo: False
+#| echo: TRUE
 #| message: False
 #| warning: False
 #| tbl-cap: Ppu of Subgroup of DAR with USL=122.2 ug/swab Using USL-normalization and USL_Pct=100
@@ -858,7 +764,7 @@ colnames(DAR122_KDEDPonUSLND ) <- paste0("**", colnames(DAR122_KDEDPonUSLND ), "
 kable(DAR122_KDEDPonUSLND )
 ```
 ```{r Ppu_KDEDP_122_2}
-#| echo: False
+#| echo: TRUE
 #| message: False
 #| warning: False
 #| tbl-cap: Ppu of Subgroup of DAR with USL=122.2 ug/swab by KDEDP Using USL=122.2
@@ -867,9 +773,8 @@ DAR122_KDEDP <- Ppu_KDEDP(data=Eq_DAR_122, Residue=DAR, USL=USL)
 colnames(DAR122_KDEDP ) <- paste0("**", colnames(DAR122_KDEDP ), "**")
 kable(DAR122_KDEDP )
 ```
-
 ```{r Ppu_KDEDPonUSLND_169_7}
-#| echo: False
+#| echo: TRUE
 #| message: False
 #| warning: False
 #| tbl-cap: Ppu of Subgroup of DAR with USL=169.7 Using USL-normalization and USL_Pct=100
@@ -880,7 +785,7 @@ kable(DAR169_KDEDPonUSLND )
 ```
 
 ```{r Ppu_KDEDP_169}
-#| echo: False
+#| echo: TRUE
 #| message: False
 #| warning: False
 #| tbl-cap: Ppu of Subgroup of DAR with USL=169.7 ug/swab by KDEDP Using USL=169.7
@@ -890,7 +795,7 @@ colnames(DAR169_KDEDP ) <- paste0("**", colnames(DAR169_KDEDP ), "**")
 kable(DAR169_KDEDP )
 ```
 ```{r Ppu_KDEDPonUSLND_20}
-#| echo: False
+#| echo: TRUE
 #| message: False
 #| warning: False
 #| tbl-cap: Ppu of Subgroup of DAR with USL=20 ug/swab Using USL-normalization and USL_Pct=100
@@ -900,7 +805,7 @@ colnames(DAR20_KDEDPonUSLND ) <- paste0("**", colnames(DAR20_KDEDPonUSLND ), "**
 kable(DAR20_KDEDPonUSLND )
 ```
 ```{r Ppu_KDEDP_20}
-#| echo: False
+#| echo: TRUE
 #| message: False
 #| warning: False
 #| tbl-cap: Ppu of Subgroup of DAR with USL=20 ug/swab by KDEDP Using USL=20
@@ -912,7 +817,7 @@ kable(DAR20_KDEDP )
 
 # 6.2 Ppu of DAR by the minimal of each subgroup (subgroup wise worst case)
 ```{r Ppu_SWWC_DAR}
-#| echo: False
+#| echo: TRUE
 #| message: False
 #| warning: False
 #| tbl-cap: The SWWC Ppu of DAR and Ppu of Each Subgroup of DAR
@@ -924,7 +829,7 @@ kable(SWWCDAR)
 #6.3 Ppu of DAR by pooling USL normalized data
 
 ```{r Ppu_KDEDPonUSLND_DAR}
-#| echo: False
+#| echo: TRUE
 #| message: False
 #| warning: False
 #| tbl-cap: Ppu of DAR by Pooling the Three Subgroups with USL-Normalization
@@ -936,7 +841,7 @@ kable(SWWC_KDEDPonUSLND_DAR )
 #6.3 Ppu of CAR by USL-normalization
 
 ```{r Ppu_KDEDPonUSLND_CAR}
-#| echo: False
+#| echo: TRUE
 #| message: False
 #| warning: False
 #| tbl-cap: Ppu of CAR
@@ -948,7 +853,7 @@ kable(SWWC_KDEDPonUSLND_CAR )
 # 7 Ppu of Mic by USL-normalization
 
 ```{r Ppu_KDEDPonUSLND_Mic}
-#| echo: False
+#| echo: TRUE
 #| message: False
 #| warning: False
 #| tbl-cap: Ppu of Mic
@@ -960,7 +865,7 @@ kable(SWWC_KDEDPonUSLND_Mic )
 # 8.1 Overall Ppu by SWWC (Subgroup wise worst case)
 
 ```{r Ppu_SWWC_KDEDP_Overall}
-#| echo: False
+#| echo: TRUE
 #| message: False
 #| warning: False
 #| tbl-cap: Process Overall Ppu by SWWC_KDEDP
@@ -971,17 +876,12 @@ SWWC_KDEDP_Overall <- Ppu_SWWC_KDEDP_Overall(
     data1 = Eq_DAR, Residue1 = DAR, USL1 = USL,
     BW = "Silver1.06")
 colnames(SWWC_KDEDP_Overall ) <- paste0("**", colnames(SWWC_KDEDP_Overall ), "**")
-
-
-kable(
-  SWWC_KDEDP_Overall)
-
-
+kable(SWWC_KDEDP_Overall)
 ```
 # 8.2 Overall Ppu by CQAWWC (CQA wise worst case)
 
 ```{r Ppu_CQAWWC_KDEDPonUSLND_Overall}
-#| echo: False
+#| echo: TRUE
 #| message: False
 #| warning: False
 #| tbl-cap: Process Overall Ppu by CQAWWC_KDEDPonUSLND
@@ -997,7 +897,7 @@ kable(CQAWWC_KDEDPonUSLND_Overall)
 # 8.3 Overall Ppu by CQAWP (CQA wise pooling)
 
 ```{r Ppu_CQAWP_KDEDPonUSLND_Overall}
-#| echo: False
+#| echo: TRUE
 #| message: False
 #| warning: False
 #| tbl-cap: Process Overall Ppu by CQAWP_KDEDPonUSLND
@@ -1013,7 +913,7 @@ kable(CQAWP_KDEDPonUSLND_Overall)
 # 9 CQAWWC Model Monitoring Cleaning Process Performance
 
 ```{r CQAWWC_Model_Application}
-#| echo: False
+#| echo: TRUE
 #| message: False
 #| warning: False
 #| tbl-cap: Monitoring Results of the Cleaning Process for Equipment A by CQAWP-BAKDEDPonUSLND Model
@@ -1026,7 +926,7 @@ kable(CQAWWC_Model)
 # 10 CQAWP Model Monitoring Cleaning Process Performance
 
 ```{r CQAWP_Model_Application}
-#| echo: False
+#| echo: TRUE
 #| message: False
 #| warning: False
 #| label: tbl-CQAWP
