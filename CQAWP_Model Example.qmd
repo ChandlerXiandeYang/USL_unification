@@ -9,12 +9,6 @@ editor: visual
 #| echo: False
 #| message: False
 #| warning: False
-##| out-height: 40%
-##| out-width: 80%
-##| label: fig-histogram
-##| fig-pos: 'H'
-##| fig-cap: Individual DAR and DAR_Pct Histograms with KDE Determined Quantiles
-#knitr::include_graphics("Histogram_combined.png")
 package_vector <- c("quarto", "rmarkdown", "shiny", "rlang", "tidyr", "DBI", "odbc", "openxlsx", "dplyr", "knitr", 
                     "stringr", "ggplot2", "forcats", "readxl", "formattable", "easyanova", "VCA", "qcc", "lubridate", 
                     "kableExtra", "lme4", "AER", "dunn.test", "boot", "lmtest", "gridExtra", "magick", "gt", 
@@ -97,22 +91,12 @@ Ppu_KDEDPonUSLND <- function(data, Residue, USL, BW = "Silver1.06") {
 ```{r Ppu_BAKDEDPonUSLND}
 #| echo: False
 #| message: False
-#| fig-pos: 'H'
 #| warning: False
-##| out-height: 40%
-##| out-width: 80%
-##| label: fig-histogram
-##| fig-cap: Individual DAR and DAR_Pct Histograms with KDE Determined Quantiles
-#knitr::include_graphics("Histogram_combined.png")
 Ppu_BAKDEDPonUSLND <- function(data, Residue, USL, BW = "Silver1.06", n_boot = 1000, conf_level = 0.95, seed = 1234) {
   library(rlang)
-  
   Residue_enquo <- enquo(Residue)
   USL_enquo <- enquo(USL)
-  
   set.seed(seed)
-  
-  # Calculate Ppu on full data
   ppu_full <- Ppu_KDEDPonUSLND(data, !!Residue_enquo, !!USL_enquo, BW)$Ppu
   n <- nrow(data)
   
@@ -124,15 +108,12 @@ Ppu_BAKDEDPonUSLND <- function(data, Residue, USL, BW = "Silver1.06", n_boot = 1
       Ppu_KDEDPonUSLND(data_boot, !!Residue_enquo, !!USL_enquo, BW)$Ppu
     }, error = function(e) NA_real_)
   }
-  
-  # Remove NAs from bootstrap results
+
   ppu_boot <- ppu_boot[!is.na(ppu_boot)]
   
   alpha <- (1 - conf_level)
   cil <- quantile(ppu_boot, probs = alpha / 2, names = FALSE)
   ciu <- quantile(ppu_boot, probs = 1 - alpha / 2, names = FALSE)
-  
-  # Return as a single-row data frame
   result_df <- data.frame(
     Ppu = ppu_full,
     CI_lower = cil,
@@ -162,8 +143,6 @@ Ppu_CQAWP_KDEDPonUSLND <- function(data1, Residue1, USL1,
                                    BW = "Silver1.06") {
   library(dplyr)
   library(rlang)
-  
-  # Helper to clean and rename dataset columns to common names Residue and USL
   clean_and_rename <- function(data, residue, usl) {
     residue_quo <- enquo(residue)
     usl_quo <- enquo(usl)
@@ -171,8 +150,7 @@ Ppu_CQAWP_KDEDPonUSLND <- function(data1, Residue1, USL1,
       filter(!is.na(!!residue_quo), !is.na(!!usl_quo)) %>%
       select(Residue = !!residue_quo, USL = !!usl_quo)
   }
-  
-  # Clean datasets
+
   data1_clean <- clean_and_rename(data1, {{Residue1}}, {{USL1}})
   
   if (!is.null(data2) && !rlang::quo_is_null(rlang::enquo(Residue2)) && !rlang::quo_is_null(rlang::enquo(USL2))) {
@@ -186,8 +164,6 @@ Ppu_CQAWP_KDEDPonUSLND <- function(data1, Residue1, USL1,
   } else {
     data3_clean <- NULL
   }
-  
-  # Pool datasets
   pooled_data <- data1_clean
   
   if (!is.null(data2_clean)) {
@@ -197,8 +173,6 @@ Ppu_CQAWP_KDEDPonUSLND <- function(data1, Residue1, USL1,
   if (!is.null(data3_clean)) {
     pooled_data <- bind_rows(pooled_data, data3_clean)
   }
-  
-  # Now call Ppu_KDEDPonUSLND() with pooled data using common columns Residue and USL
   ppu_result <- Ppu_KDEDPonUSLND(
     data = pooled_data,
     Residue = Residue,
@@ -217,11 +191,6 @@ Ppu_CQAWP_KDEDPonUSLND <- function(data1, Residue1, USL1,
 #| message: False
 #| fig-pos: 'H'
 #| warning: False
-##| out-height: 40%
-##| out-width: 80%
-##| label: fig-histogram
-##| fig-cap: Individual DAR and DAR_Pct Histograms with KDE Determined Quantiles
-#knitr::include_graphics("Histogram_combined.png")
 Ppu_CQAWP_BAKDEDPonUSLND <- function(data1, Residue1, USL1,
                                      data2 = NULL, Residue2 = NULL, USL2 = NULL,
                                      data3 = NULL, Residue3 = NULL, USL3 = NULL,
@@ -246,22 +215,16 @@ Ppu_CQAWP_BAKDEDPonUSLND <- function(data1, Residue1, USL1,
   data1_clean <- clean_data(data1, {{Residue1}}, {{USL1}})
   data2_clean <- if (!is.null(data2)) clean_data(data2, {{Residue2}}, {{USL2}}) else NULL
   data3_clean <- if (!is.null(data3)) clean_data(data3, {{Residue3}}, {{USL3}}) else NULL
-  
-  # Capture quosures for Residue and USL to use in bootstrap safely
   Residue1_quo <- enquo(Residue1)
   USL1_quo <- enquo(USL1)
   Residue2_quo <- if (!missing(Residue2)) enquo(Residue2) else NULL
   USL2_quo <- if (!missing(USL2)) enquo(USL2) else NULL
   Residue3_quo <- if (!missing(Residue3)) enquo(Residue3) else NULL
   USL3_quo <- if (!missing(USL3)) enquo(USL3) else NULL
-  
-  # 2) Bootstrap iterations
   bootstrap_ppus <- replicate(n_boot, {
     boot_data1 <- data1_clean %>% sample_n(size = nrow(data1_clean), replace = TRUE)
     boot_data2 <- if (!is.null(data2_clean)) data2_clean %>% sample_n(size = nrow(data2_clean), replace = TRUE) else NULL
     boot_data3 <- if (!is.null(data3_clean)) data3_clean %>% sample_n(size = nrow(data3_clean), replace = TRUE) else NULL
-    
-    # 3) Calculate Ppu on bootstrap samples, safely
     tryCatch({
       Ppu_CQAWP_KDEDPonUSLND(
         boot_data1, !!Residue1_quo, !!USL1_quo,
@@ -291,12 +254,6 @@ Ppu_CQAWP_BAKDEDPonUSLND <- function(data1, Residue1, USL1,
 #| echo: False
 #| message: False
 #| warning: False
-##| out-height: 40%
-##| out-width: 80%
-##| label: fig-histogram
-##| fig-pos: 'H'
-##| fig-cap: Individual DAR and DAR_Pct Histograms with KDE Determined Quantiles
-#knitr::include_graphics("Histogram_combined.png")
 CQAWP_BAKDEDPonUSLND_CVStage3Monitoring <- function(
     data1, Residue1, USL1, Fiscal_Year1,
     data2 = NULL, Residue2 = NULL, USL2 = NULL, Fiscal_Year2 = NULL,
@@ -431,33 +388,9 @@ CQAWP_BAKDEDPonUSLND_CVStage3Monitoring <- function(
 #| message: False
 #| warning: False
 #| tbl-cap: Cleaning Process Overall Performance for Equipment A by CQAWP with USL-Normalized DAR, CAR, and Mic Data
-##| out-height: 40%
-##| out-width: 80%
-##| label: tbl-CQAWWC
-#knitr::include_graphics("Histogram_combined.png")
+
 CQAWP_Model <- CQAWP_BAKDEDPonUSLND_CVStage3Monitoring(data1=Eq_DAR, Residue1=DAR, USL1=USL,Fiscal_Year1=Fiscal_Year,data2=Eq_CAR, Residue2=CAR, USL2=USL,Fiscal_Year2=Fiscal_Year,
 data3=Eq_Mic, Residue3=Mic, USL3=USL,Fiscal_Year3=Fiscal_Year,Time_cut=2025, initial_boot = 500, seed=1234)
 CQAWP_Model
-# kable(Eq_CAR1[ ,c("CleaningEvent", "Molecule", "LIMSProjectID", "CAR", "USL", "Swab_Reason", "Classification", "Sampling_Date")], 
-#       format = "latex", booktabs = TRUE, longtable = TRUE, caption = "CAR Data", row.names = FALSE) %>%
-#   kable_styling(font_size = 9, position = "center", latex_options = c("scale_down", "striped", "hold_position"))
-```
-```{r Ppu_calculation}
-#| echo: False
-#| message: False
-#| warning: False
-##label: fig-CQAWWC_Modle
-##| fig-pos: 'H'
-##| fig-cap: Cleaning Process Overall Performance for Equipment A with USL-Normalized DAR, CAR, and Mic Data
-##| out-height: 40%
-##| out-width: 80%
-#knitr::include_graphics("Histogram_combined.png")
-#CQAWWC_Model <- CQAWWC_BAKDEDPonUSLND_CVStage3Monitoring(data1=Eq_DAR, Residue1=DAR, USL1=USL,
-                                        # data2=Eq_CAR, Residue2=CAR, USL2=USL,
-                                        # data3=Eq_Mic, Residue3=Mic, USL3=USL,
-                                        # Fiscal_Year=Fiscal_Year,Time_cut=2025, initial_boot = 500, seed=1234)
-#CQAWWC_Model
-# kable(Eq_CAR1[ ,c("CleaningEvent", "Molecule", "LIMSProjectID", "CAR", "USL", "Swab_Reason", "Classification", "Sampling_Date")], 
-#       format = "latex", booktabs = TRUE, longtable = TRUE, caption = "CAR Data", row.names = FALSE) %>%
-#   kable_styling(font_size = 9, position = "center", latex_options = c("scale_down", "striped", "hold_position"))
+
 ```
