@@ -4,7 +4,7 @@ The file `Code_and_its_output_for_the_manuscript.qmd` contains all the code used
 
 **"Specification Limit Normalization for Nonparametric Process Capability Analysis and Its Application in Cleaning Validation with AI-Enabled Monitoring Models."**
 
-## 🔧 Steps to Reproduce the Output
+##  Steps to Reproduce the Output
 
 1). **Download the data** from the folder named **"Equipment A."**
 
@@ -23,7 +23,7 @@ The file `Code_and_its_output_for_the_manuscript.qmd` contains all the code used
 
 This section is for users who want to understand the functions or apply them in business operations.
 
-## 📏 2.1  USL-Normalization Functions 
+## 2.1  USL-Normalization Functions 
 
 ### 2.1.1 A single CQA uses Ppu_KDEDPonUSLND method:
 - `Ppu_KDEDPonUSLND`: Calculates Ppu using USL-normalized data.
@@ -44,7 +44,7 @@ This section is for users who want to understand the functions or apply them in 
 > **Note:** Bootstrap uses 1,000 iterations by default. If the confidence interval length (CIL) is less than 1 during training, it switches to 10,000 iterations. Bandwidth (`BW`) options include: `Silver1.06`, `Silver0.9`, `Silver0.9IQR`, or user-defined.
 ---
 
-## 📊 2.2 Traditional Ppu Methods
+## 2.2 Traditional Ppu Methods
 
 ### 2.2.1 For a single CQA:
 - **Method 1**: Split data into subgroups and use `Ppu_KDEDP` (no USL normalization). This is the traditional way.
