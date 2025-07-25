@@ -46,8 +46,8 @@ This section is for users who want to understand the functions or apply them in 
 ## 📊 Traditional Ppu Methods
 
 ### For a single CQA:
-- **Method 1**: Split data into subgroups and use `Ppu_KDEDP` (no USL normalization). This is traditional way.
-- **Method 2**: Use `Ppu_SWWC_KDEDP` to compute worst-case Ppu across subgroups. This is traditional way.
+- **Method 1**: Split data into subgroups and use `Ppu_KDEDP` (no USL normalization). This is the traditional way.
+- **Method 2**: Use `Ppu_SWWC_KDEDP` to compute worst-case Ppu across subgroups. This is the traditional way.
   
   > Note: `Ppu_SWWC_KDEDP` uses `Ppu_KDEDPonUSLND` internally, as Ppu is invariant to USL-normalization. In fact, change `Ppu_KDEDPonUSLND` by `Ppu_KDEDP` in `Ppu_SWWC_KDEDP`, it also works and the output is the same since Ppu, Ppl, and Ppk are USL-normalizaiton invariants.
 
