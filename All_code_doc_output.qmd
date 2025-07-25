@@ -826,7 +826,7 @@ SWWCDAR <- Ppu_SWWC_KDEDP(data=Eq_DAR, Residue=DAR, USL=USL)
 colnames(SWWCDAR) <- paste0("**", colnames(SWWCDAR), "**")
 kable(SWWCDAR)
 ```
-#6.3 Ppu of DAR by pooling USL normalized data
+# 6.3 Ppu of DAR by pooling USL normalized data
 
 ```{r Ppu_KDEDPonUSLND_DAR}
 #| echo: TRUE
@@ -838,7 +838,7 @@ SWWC_KDEDPonUSLND_DAR <- Ppu_KDEDPonUSLND(data=Eq_DAR, Residue=DAR, USL=USL)
 colnames(SWWC_KDEDPonUSLND_DAR ) <- paste0("**", colnames(SWWC_KDEDPonUSLND_DAR ), "**")
 kable(SWWC_KDEDPonUSLND_DAR )
 ```
-#6.3 Ppu of CAR by USL-normalization
+# 6.4 Ppu of CAR by USL-normalization
 
 ```{r Ppu_KDEDPonUSLND_CAR}
 #| echo: TRUE
