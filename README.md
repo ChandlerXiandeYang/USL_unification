@@ -37,7 +37,8 @@ This section is for users who want to understand the functions or apply them in 
 - **Model 1**: Combines 1 + 2 + `CQAWWC_KDEDPonUSLND_CVStage3Monitoring`
 - **Model 2**: Combines 1 + 3 + `CQAWWC_KDEDPonUSLND_CVStage3Monitoring`
 
-> **Note:** Bootstrap uses 1,000 iterations by default. If the confidence interval length (CIL) is less than 1 during training, it switches to 10,000 iterations.  
+> **Note:** Bootstrap uses 1,000 iterations by default. If the confidence interval length (CIL) is less than 1 during training, it switches to 10,000 iterations.
+>  
 > Bandwidth (`BW`) options include: `Silver1.06`, `Silver0.9`, `Silver0.9IQR`, or user-defined.
 
 ---
@@ -46,8 +47,9 @@ This section is for users who want to understand the functions or apply them in 
 
 ### For a single CQA:
 - **Method 1**: Split data into subgroups and use `Ppu_KDEDP` (no USL normalization).
-- **Method 2**: Use `Ppu_SWWC_KDEDP` to compute worst-case Ppu across subgroups.  
-  > Note: This uses `Ppu_KDEDPonUSLND` internally, as Ppu is invariant to normalization.
+- **Method 2**: Use `Ppu_SWWC_KDEDP` to compute worst-case Ppu across subgroups.
+  
+  > Note: `Ppu_SWWC_KDEDP uses `Ppu_KDEDPonUSLND` internally, as Ppu is invariant to normalization. In fact, change `Ppu_KDEDPonUSLND` by `Ppu_KDEDP` in `Ppu_SWWC_KDEDP`, it also works and the output is the same since Ppu, Ppl, and Ppk are USL-normalizaiton invariants.
 
 ### For 1 to 3 CQAs:
 - `Ppu_SWWC_KDEDP_overall`: Computes worst-case Ppu across all CQAs, representing the overall cleaning process capability.
