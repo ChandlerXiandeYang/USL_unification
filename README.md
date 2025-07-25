@@ -1,4 +1,4 @@
-# 📘 How to Use the Code to Verify the Output in the Manuscript
+# 📘 1 How to Use the Code to Verify the Output in the Manuscript
 
 The file `Code_and_its_output_for_the_manuscript.qmd` contains all the code used in the manuscript titled:
 
@@ -12,33 +12,31 @@ The file `Code_and_its_output_for_the_manuscript.qmd` contains all the code used
 4. **Run the file** in RStudio or use the `quarto::quarto_render()` function in R.
 5. The output will include **15 tables** labeled Table 1 to Table 15.  
    > **Note:** The tables in the manuscript are numbered one higher than those generated (i.e., Table 1 in the code corresponds to Table 2 in the manuscript).
-
 ---
 
-# 🧠 How to Use the Functions
+# 🧠 2 How to Use the Functions
 
 This section is for users who want to understand the functions or apply them in business operations.
 
 ## 📏 USL-Normalization Functions
 
-### 1 A single CQA uses Ppu_KDEDPonUSLND method:
+### 1) A single CQA uses Ppu_KDEDPonUSLND method:
 - `Ppu_KDEDPonUSLND`: Calculates Ppu using USL-normalized data.
 - `Ppu_BAKDEDPonUSLND`: Calculates Ppu and its 95% confidence interval using bootstrap.
 
-### 2 CQAWWC_KDEDPonUSLDN is CQA-wise worst case overall Ppu assessing a cleaning process who has 1 to 3 CQAs (DAR, CAR, Mic):
+### 2) CQAWWC_KDEDPonUSLDN is CQA-wise worst case overall Ppu assessing a cleaning process who has 1 to 3 CQAs (DAR, CAR, Mic):
 - `CQAWWC_KDEDPonUSLND`: Computes CQA-wise worst-case Ppu.
 - `CQAWWC_BAKDEDPonUSLND`: Computes Ppu and 95% CI using bootstrap.
 
-### 3 CQAWP_KDEDPonUSLND is CQA-wise pooling case overall Ppu assessing a cleaning process who has 1 to 3 CQAs (DAR, CAR, Mic):
+### 3) CQAWP_KDEDPonUSLND is CQA-wise pooling case overall Ppu assessing a cleaning process who has 1 to 3 CQAs (DAR, CAR, Mic):
 - `CQAWP_KDEDPonUSLND`: Computes pooled Ppu for 1–3 CQAs.
 - `CQAWP_BAKDEDPonUSLND`: Computes pooled Ppu and 95% CI using bootstrap.
 
 ### Monitoring Models:
-- **Model 1**: Combines 1 + 2 + `CQAWWC_KDEDPonUSLND_CVStage3Monitoring`
-- **Model 2**: Combines 1 + 3 + `CQAWWC_KDEDPonUSLND_CVStage3Monitoring`
+- **Model 1**: Combines 1) + 2) + `CQAWWC_KDEDPonUSLND_CVStage3Monitoring`
+- **Model 2**: Combines 1) + 3) + `CQAWWC_KDEDPonUSLND_CVStage3Monitoring`
 
 > **Note:** Bootstrap uses 1,000 iterations by default. If the confidence interval length (CIL) is less than 1 during training, it switches to 10,000 iterations. Bandwidth (`BW`) options include: `Silver1.06`, `Silver0.9`, `Silver0.9IQR`, or user-defined.
-
 ---
 
 ## 📊 Traditional Ppu Methods
