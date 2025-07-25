@@ -1,4 +1,4 @@
-# How to use the code to verify the ouput in the Manuscript?
+# How to Use the Code to Verify the Ouput in the Manuscript?
 
 The file "Code_and_its_output_for_the_manuscript.qmd" contains all code for the manuscript "Specification Limit Normalization for Nonparametric Process Capability Analysis and Its Applciation in Cleaning Validation with AI-Enabled Monitoring Models".
 
@@ -9,7 +9,7 @@ The following is the steps to generate outputs from the code.
 3) Change the path in the file "Code_and_its_output_for_the_manuscript.qmd" to the path you stored the downloaded data and then run "code and its output for muanscript.qmd" in RStudio or use quarto_render() in R.
 4) The outputs are 15 tables named Table 1 to Table 15. If you add 1 to the number of each table, you get the table in the manuscript.
    
-# How to use these functions? 
+# How to Use These Functions? 
 
 The following is for users who want to understand those functions or want to apply it in business operation.
 
