@@ -27,7 +27,7 @@ The file `CODE_AND_its_output_for_the_manuscript.qmd` contains all the code used
 
 # 🧠 2 How to Use the Functions in Business Operation
 
-This section is for users who want to understand the functions or apply them in business operations.
+This section is for users who want to understand the functions or apply them in business operations with functions in the folder "Functions".
 
 ## 2.1  USL-Normalization Functions 
 
