@@ -19,7 +19,7 @@ The file `CODE_AND_its_output_for_the_manuscript.qmd` contains all the code used
 
    > **Note:** The tables in the manuscript are numbered one higher than those generated (i.e., Table 1 in the code corresponds to Table 2 in the manuscript). "CODE_AND_its_output_for_the_manuscript.qmd" can spend 1.5 hours to get the output because it totally runs more than 2000 bootstrap iterations.
  
-# **If you just verify the output or the code, use `CODE_AND_its_output_for_the_manuscript.qmd` and `CODE_AND_its_output_for_the_manuscript.pdf` only.**
+## **If you just verify the output or the code, use `CODE_AND_its_output_for_the_manuscript.qmd` and `CODE_AND_its_output_for_the_manuscript.pdf` only.**
 
 ---
 
