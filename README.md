@@ -23,7 +23,7 @@ The file `CODE_AND_its_output_for_the_manuscript.qmd` contains all the code used
 
 ---
 
-# ⚠️ For Practitioners Only
+# ⚠️ The Following are for Practitioners Only
 
 # 🧠 2. How to Use the Functions in Business Operations
 
