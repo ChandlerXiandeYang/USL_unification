@@ -39,9 +39,13 @@ This section is for users who want to understand or apply the functions in busin
 - `CQAWWC_KDEDPonUSLND`: Computes CQA-wise worst-case Ppu.
 - `CQAWWC_BAKDEDPonUSLND`: Computes Ppu and 95% CI using bootstrap.
 
+  This is the first new method to assess a cleaning process performance.
+
 ### 2.1.3 Pooled Ppu for 1–3 CQAs (DAR, CAR, Mic):
 - `CQAWP_KDEDPonUSLND`: Computes pooled Ppu across CQAs.
 - `CQAWP_BAKDEDPonUSLND`: Computes pooled Ppu and 95% CI using bootstrap.
+
+This is the second new method to assess a cleaning process performance.
 
 ### 2.1.4 Monitoring Models:
 - **Model 1**: Combines 2.1.1 + 2.1.2 + `CQAWWC_KDEDPonUSLND_CVStage3Monitoring`
@@ -64,9 +68,50 @@ This section is for users who want to understand or apply the functions in busin
 ### 2.2.2 For 1–3 CQAs:
 - `Ppu_SWWC_KDEDP_overall`: Computes worst-case Ppu across all CQAs, representing overall cleaning process capability.
 
+This is traditional method to assess a cleaning process performance.
+
 ---
 
 ## 📐 3. Bandwidth Function Clarification
 
-Although **JMP** claims its bandwidth formula is:
+Although **JMP** claims its bandwidth formula is: BW = 0.9 * s / n^(1/5)
 
+Where:
+
+- `s` is the **uncorrected** sample standard deviation (divided by `n`, not `n - 1`)
+- Grid size is set to 100
+
+> **However, this is not accurate** based on our findings.
+
+We observed that:
+
+- The actual bandwidth formula should be:  BW = 1.06 * s / n^(1/5)
+
+  where `s` is the **corrected** sample standard deviation (divided by `n - 1`)
+  
+- The grid size should be **much larger** than 100. We set the grid size=2^15.
+
+  This adjustment provides more accurate density estimation and better alignment with theoretical expectations.
+---
+
+All functions in the code allow manual input of the bandwidth `h`, as our code already accounts for this flexibility.
+
+```r
+ if (is.character(BW)) {
+    BW <- match.arg(BW, choices = c("Silver1.06", "Silver0.9", "Silver0.9IQR"))
+    h <- switch(BW,
+                "Silver1.06" = 1.06 * s / n^(1/5),
+                "Silver0.9" = 0.9 * s / n^(1/5),
+                "Silver0.9IQR" = {
+                  iqr_val <- IQR(x)
+                  sigma <- min(s, iqr_val / 1.34)
+                  0.9 * sigma / n^(1/5)
+                })
+    bw_method <- BW
+  } else if (is.numeric(BW) && length(BW) == 1 && BW > 0) {
+    h <- BW
+    bw_method <- "User-defined"
+  } else {
+    stop("BW must be numeric > 0 or one of: 'Silver1.06', 'Silver0.9', 'Silver0.9IQR'.")
+  }
+```
