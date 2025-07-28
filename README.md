@@ -30,19 +30,19 @@ The file `CODE_AND_its_output_for_the_manuscript.qmd` contains all the code used
 
 ## 2.1 USL-Normalization Method to Calculate Ppu for a CQA or for a Cleaning Process
 
-### 2.1.1 Single CQA-- One of DAR, CAR, or Mic Ppu Using `Ppu_KDEDPonUSLND` Method-- to Assess one CQA Ppu:
+### 2.1.1 To Assess One of DAR, CAR, or Mic Ppu Using `Ppu_KDEDPonUSLND` Method
 - `Ppu_KDEDPonUSLND`: Calculates Ppu using USL-normalized data.
 - `Ppu_BAKDEDPonUSLND`: Calculates Ppu and its 95% confidence interval using bootstrap.
 
-### 2.1.2 Worst-Case Ppu for 1–3 CQAs from DAR, CAR, and Mic--to Assess a Cleaning Process Overall Ppu:
+### 2.1.2 To Assess a Cleaning Process Overall Ppu with 1 to 3 CQAs from DAR, CAR, and Mic Using CQAWWC Method
 - `CQAWWC_KDEDPonUSLND`: Computes CQA-wise worst-case Ppu.
 - `CQAWWC_BAKDEDPonUSLND`: Computes Ppu and 95% CI using bootstrap.
   
-### 2.1.3 Pooled Ppu for 1–3 CQAs from DAR, CAR, and Mic-- to Assess a Cleaning Process Overall Ppu:
+### 2.1.3 To Assess a Cleaning Process Overall Ppu with 1 to 3 CQAs from DAR, CAR, and Mic Using CQAWP Method
 - `CQAWP_KDEDPonUSLND`: Computes pooled Ppu across CQAs.
 - `CQAWP_BAKDEDPonUSLND`: Computes pooled Ppu and 95% CI using bootstrap.
 
-### 2.1.4 Monitoring Models for Stage 3 Cleaning Process Verification/Testing/Monitoring:
+### 2.1.4 To Monitor/Verify/Test a Cleaning Process for Stage 3 CPV with Monitoring Models
 - **Model 1**: Combines 2.1.1 + 2.1.2 + `CQAWWC_KDEDPonUSLND_CVStage3Monitoring`
 - **Model 2**: Combines 2.1.1 + 2.1.2 + `CQAWWC_KDEDPonUSLND_CVStage3Monitoring`
 
@@ -53,14 +53,15 @@ The file `CODE_AND_its_output_for_the_manuscript.qmd` contains all the code used
 
 ## 2.2 Traditional Method to Calculate  Ppu for a CQA or for a Cleaning Process
 
-### 2.2.1 For a Single CQA-- One of DAR, CAR, or Mic:
-- **Method 1**: You split data into subgroups and use `Ppu_KDEDP` (no USL normalization) and then take the minimal. This is the traditional manual method.
-- **Method 2**: Use `Ppu_SWWC_KDEDP` to compute worst-case Ppu across subgroups. You do not need to split data into subgroups. The function can detect all subgroups.
+### 2.2.1 To Assess One of DAR, CAR, or Mic Ppu Using `Ppu_KDEDP`
+
+- **Method 1**: Split data into subgroups manually, use `Ppu_KDEDP` to calculate each subgroup's Ppu (no USL normalization), and then take the minimal. This is the traditional manual method.
+- **Method 2**: Use `Ppu_SWWC_KDEDP` to compute worst-case Ppu across subgroups. You do not need to split data into subgroups but use the data directly. The function can detect all subgroups.
 
 > **Note:** `Ppu_SWWC_KDEDP` uses `Ppu_KDEDPonUSLND` internally, as Ppu is invariant to USL normalization.  
 > You can replace `Ppu_KDEDPonUSLND` with `Ppu_KDEDP` in `Ppu_SWWC_KDEDP`—the output remains the same since Ppu, Ppl, and Ppk are USL-normalization invariants.
 
-### 2.2.2 For 1–3 CQAs from DAR, CAR, and Mic to Assess a Cleaning Process Overall Ppu:
+### 2.2.2 For 1–3 To Assess a Cleaning Process Overall Ppu by worst case of all subgroups from 1 to 3 CQAs Among DAR, CAR, and Mic:
 - `Ppu_SWWC_KDEDP_overall`: Computes worst-case Ppu across all CQAs, representing overall cleaning process capability.
 
 ---
