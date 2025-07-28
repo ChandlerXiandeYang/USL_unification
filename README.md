@@ -52,7 +52,7 @@ This section is for users who want to understand or apply the functions in busin
 
 ---
 
-## 2.2 Traditional Method to calculate  Ppu for a CQA or for a Cleaning Process
+## 2.2 Traditional Method to Calculate  Ppu for a CQA or for a Cleaning Process
 
 ### 2.2.1 For a Single CQA:
 - **Method 1**: Split data into subgroups and use `Ppu_KDEDP` (no USL normalization). This is the traditional method.
