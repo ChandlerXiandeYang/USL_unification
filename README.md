@@ -21,7 +21,7 @@ This section is for verification of the output using `CODE_AND_its_output_for_th
 
 #  2. How to Use the Functions in Business Operations
 
-This section is for users who want to understand or apply the functions in business operations. All functions are located in the folder `"Functions"`.
+This section is for practitioners who want to understand or apply the functions in business operations. All functions are located in the folder `"Functions"`.
 
 ## 2.1 USL-Normalization Method to Calculate Ppu for a CQA or a Cleaning Process
 
