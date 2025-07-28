@@ -31,15 +31,15 @@ This section is for users who want to understand or apply the functions in busin
 
 ## 2.1 USL-Normalization Method to Calculate Ppu for a CQA or for a Cleaning Process
 
-### 2.1.1 Single CQA Ppu Using `Ppu_KDEDPonUSLND` Method-- to Assess one CQA Ppu:
+### 2.1.1 Single CQA-- One of DAR, CAR, or Mic Ppu Using `Ppu_KDEDPonUSLND` Method-- to Assess one CQA Ppu:
 - `Ppu_KDEDPonUSLND`: Calculates Ppu using USL-normalized data.
 - `Ppu_BAKDEDPonUSLND`: Calculates Ppu and its 95% confidence interval using bootstrap.
 
-### 2.1.2 Worst-Case Ppu for 1–3 CQAs (DAR, CAR, Mic)--to Assess a Cleaning Process Overall Ppu:
+### 2.1.2 Worst-Case Ppu for 1–3 CQAs from DAR, CAR, and Mic--to Assess a Cleaning Process Overall Ppu:
 - `CQAWWC_KDEDPonUSLND`: Computes CQA-wise worst-case Ppu.
 - `CQAWWC_BAKDEDPonUSLND`: Computes Ppu and 95% CI using bootstrap.
   
-### 2.1.3 Pooled Ppu for 1–3 CQAs (DAR, CAR, Mic)-- to Assess a Cleaning Process Overall Ppu:
+### 2.1.3 Pooled Ppu for 1–3 CQAs from DAR, CAR, and Mic-- to Assess a Cleaning Process Overall Ppu:
 - `CQAWP_KDEDPonUSLND`: Computes pooled Ppu across CQAs.
 - `CQAWP_BAKDEDPonUSLND`: Computes pooled Ppu and 95% CI using bootstrap.
 
@@ -54,14 +54,14 @@ This section is for users who want to understand or apply the functions in busin
 
 ## 2.2 Traditional Method to Calculate  Ppu for a CQA or for a Cleaning Process
 
-### 2.2.1 For a Single CQA:
-- **Method 1**: Split data into subgroups and use `Ppu_KDEDP` (no USL normalization). This is the traditional method.
-- **Method 2**: Use `Ppu_SWWC_KDEDP` to compute worst-case Ppu across subgroups.
+### 2.2.1 For a Single CQA-- One of DAR, CAR, or Mic:
+- **Method 1**: You split data into subgroups and use `Ppu_KDEDP` (no USL normalization) and then take the minimal. This is the traditional manual method.
+- **Method 2**: Use `Ppu_SWWC_KDEDP` to compute worst-case Ppu across subgroups. You do not need to split data into subgroups. The function can detect all subgroups.
 
 > **Note:** `Ppu_SWWC_KDEDP` uses `Ppu_KDEDPonUSLND` internally, as Ppu is invariant to USL normalization.  
 > You can replace `Ppu_KDEDPonUSLND` with `Ppu_KDEDP` in `Ppu_SWWC_KDEDP`—the output remains the same since Ppu, Ppl, and Ppk are USL-normalization invariants.
 
-### 2.2.2 For 1–3 CQAs:
+### 2.2.2 For 1–3 CQAs from DAR, CAR, and Mic to Assess a Cleaning Process Overall Ppu:
 - `Ppu_SWWC_KDEDP_overall`: Computes worst-case Ppu across all CQAs, representing overall cleaning process capability.
 
 ---
