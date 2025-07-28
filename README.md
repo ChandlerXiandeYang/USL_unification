@@ -25,7 +25,7 @@ This section is for users who want to understand or apply the functions in busin
 
 ## 2.1 USL-Normalization Method to Calculate Ppu for a CQA or a Cleaning Process
 
-### 2.1.1 To Assess One of DAR, CAR, or Mic Using `Ppu_KDEDPonUSLND` Method
+### 2.1.1 To Assess One of DAR, CAR, or Mic Ppu Using `Ppu_KDEDPonUSLND` Method
 - `Ppu_KDEDPonUSLND`: Calculates Ppu using USL-normalized data.
 - `Ppu_BAKDEDPonUSLND`: Calculates Ppu and its 95% confidence interval using bootstrap.
 
@@ -48,7 +48,7 @@ This section is for users who want to understand or apply the functions in busin
 
 ## 2.2 Traditional Method to Calculate Ppu for a CQA or a Cleaning Process
 
-### 2.2.1 To Assess One of DAR, CAR, or Mic Using `Ppu_KDEDP` Method
+### 2.2.1 To Assess One of DAR, CAR, or Mic Ppu Using `Ppu_KDEDP` Method
 - **Method 1**: Manually split data into subgroups, use `Ppu_KDEDP` to calculate each subgroup's Ppu (no USL normalization), and take the minimum. This is the traditional manual method.
 - **Method 2**: Use `Ppu_SWWC_KDEDP` to compute worst-case Ppu across subgroups. No need to manually split data—the function detects subgroups automatically.
 
