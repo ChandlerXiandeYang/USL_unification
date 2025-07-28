@@ -23,11 +23,10 @@ The file `CODE_AND_its_output_for_the_manuscript.qmd` contains all the code used
 
 ---
 
-# ⚠️ The Following are for Practitioners Only
 
 # 🧠 2. How to Use the Functions in Business Operations
 
-This section is for users who want to understand or apply the functions in business operations. All functions are located in the folder `"Functions"`.
+**This section is for users who want to understand or apply the functions in business operations**. All functions are located in the folder `"Functions"`.
 
 ## 2.1 USL-Normalization Method to Calculate Ppu for a CQA or for a Cleaning Process
 
