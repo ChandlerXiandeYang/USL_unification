@@ -1,3 +1,66 @@
+# 📘 1. How to Use the Code to Verify the Output in the Manuscript
+
+The file `CODE_AND_its_output_for_the_manuscript.qmd` contains all the code used in the manuscript titled:
+
+**"Specification Limit Normalization for Nonparametric Process Capability Analysis and Its Application in Cleaning Validation with AI-Enabled Monitoring Models."**
+
+### Steps to Reproduce the Output
+
+1. Download the data from the folder named `"Equipment A"`.
+2. Download the file `CODE_AND_its_output_for_the_manuscript.qmd`.
+3. Update the file path in the `.qmd` file to reflect the location where you saved the data.
+4. Run the file in RStudio or use the `quarto::quarto_render()` function in R.
+5. The output will include **15 tables**, labeled Table 1 to Table 15.
+
+> **Note:** The tables in the manuscript are numbered one higher than those generated (i.e., Table 1 in the code corresponds to Table 2 in the manuscript).  
+> The file may take **up to 1.5 hours** to run due to more than **2,000 bootstrap iterations**.
+
+This section is for verification of the output using `CODE_AND_its_output_for_the_manuscript.qmd` and `CODE_AND_its_output_for_the_manuscript.pdf`.
+
+---
+
+# 🧠 2. How to Use the Functions in Business Operations
+
+This section is for users who want to understand or apply the functions in business operations. All functions are located in the folder `"Functions"`.
+
+## 2.1 USL-Normalization Method to Calculate Ppu for a CQA or a Cleaning Process
+
+### 2.1.1 To Assess One of DAR, CAR, or Mic Using `Ppu_KDEDPonUSLND` Method
+- `Ppu_KDEDPonUSLND`: Calculates Ppu using USL-normalized data.
+- `Ppu_BAKDEDPonUSLND`: Calculates Ppu and its 95% confidence interval using bootstrap.
+
+### 2.1.2 To Assess Overall Cleaning Process Ppu (1–3 CQAs: DAR, CAR, Mic) Using CQAWWC Method
+- `CQAWWC_KDEDPonUSLND`: Computes CQA-wise worst-case Ppu.
+- `CQAWWC_BAKDEDPonUSLND`: Computes Ppu and 95% CI using bootstrap.
+
+### 2.1.3 To Assess Overall Cleaning Process Ppu (1–3 CQAs: DAR, CAR, Mic) Using CQAWP Method
+- `CQAWP_KDEDPonUSLND`: Computes pooled Ppu across CQAs.
+- `CQAWP_BAKDEDPonUSLND`: Computes pooled Ppu and 95% CI using bootstrap.
+
+### 2.1.4 To Monitor/Verify/Test a Cleaning Process for Stage 3 CPV
+- **Model 1**: Combines 2.1.1 + 2.1.2 + `CQAWWC_KDEDPonUSLND_CVStage3Monitoring`
+- **Model 2**: Combines 2.1.1 + 2.1.2 + `CQAWWC_KDEDPonUSLND_CVStage3Monitoring`
+
+> **Note:** Bootstrap uses 1,000 iterations by default. If the confidence interval lower limit (CIL) is less than 1 during training, it switches to 10,000 iterations.  
+> Bandwidth (`BW`) options include: `Silver1.06`, `Silver0.9`, `Silver0.9IQR`, or user-defined.
+
+---
+
+## 2.2 Traditional Method to Calculate Ppu for a CQA or a Cleaning Process
+
+### 2.2.1 To Assess One of DAR, CAR, or Mic Using `Ppu_KDEDP` Method
+- **Method 1**: Manually split data into subgroups, use `Ppu_KDEDP` to calculate each subgroup's Ppu (no USL normalization), and take the minimum. This is the traditional manual method.
+- **Method 2**: Use `Ppu_SWWC_KDEDP` to compute worst-case Ppu across subgroups. No need to manually split data—the function detects subgroups automatically.
+
+> **Note:** `Ppu_SWWC_KDEDP` uses `Ppu_KDEDPonUSLND` internally, as Ppu is invariant to USL normalization.  
+> You can replace `Ppu_KDEDPonUSLND` with `Ppu_KDEDP` in `Ppu_SWWC_KDEDP`—the output remains the same since Ppu, Ppl, and Ppk are USL-normalization invariants.
+
+### 2.2.2 To Assess Overall Cleaning Process Ppu by Worst Case Across 1–3 CQAs (DAR, CAR, Mic)
+- `Ppu_SWWC_KDEDP_overall`: Computes worst-case Ppu across all CQAs, representing overall cleaning process capability.
+
+
+
+
 # 📘 1 How to Use the Code to Verify the Output in the Manuscript
 
 The file `CODE_AND_its_output_for_the_manuscript.qmd` contains all the code used in the manuscript titled:
