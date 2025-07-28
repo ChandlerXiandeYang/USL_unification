@@ -29,25 +29,21 @@ The file `CODE_AND_its_output_for_the_manuscript.qmd` contains all the code used
 
 This section is for users who want to understand or apply the functions in business operations. All functions are located in the folder `"Functions"`.
 
-## 2.1 USL-Normalization Functions
+## 2.1 USL-Normalization Method to Calculate Ppu for a CQA or for a Cleaning Process
 
-### 2.1.1 Single CQA Using `Ppu_KDEDPonUSLND` Method:
+### 2.1.1 Single CQA Ppu Using `Ppu_KDEDPonUSLND` Method-- to Assess one CQA Ppu:
 - `Ppu_KDEDPonUSLND`: Calculates Ppu using USL-normalized data.
 - `Ppu_BAKDEDPonUSLND`: Calculates Ppu and its 95% confidence interval using bootstrap.
 
-### 2.1.2 Worst-Case Ppu for 1–3 CQAs (DAR, CAR, Mic):
+### 2.1.2 Worst-Case Ppu for 1–3 CQAs (DAR, CAR, Mic)--to Assess a Cleaning Process Overall Ppu:
 - `CQAWWC_KDEDPonUSLND`: Computes CQA-wise worst-case Ppu.
 - `CQAWWC_BAKDEDPonUSLND`: Computes Ppu and 95% CI using bootstrap.
-
-  This is the first new method to assess a cleaning process performance.
-
-### 2.1.3 Pooled Ppu for 1–3 CQAs (DAR, CAR, Mic):
+  
+### 2.1.3 Pooled Ppu for 1–3 CQAs (DAR, CAR, Mic)-- to Assess a Cleaning Process Overall Ppu:
 - `CQAWP_KDEDPonUSLND`: Computes pooled Ppu across CQAs.
 - `CQAWP_BAKDEDPonUSLND`: Computes pooled Ppu and 95% CI using bootstrap.
 
-This is the second new method to assess a cleaning process performance.
-
-### 2.1.4 Monitoring Models:
+### 2.1.4 Monitoring Models for Stage 3 Cleaning Process Verification/Testing/Monitoring:
 - **Model 1**: Combines 2.1.1 + 2.1.2 + `CQAWWC_KDEDPonUSLND_CVStage3Monitoring`
 - **Model 2**: Combines 2.1.1 + 2.1.2 + `CQAWWC_KDEDPonUSLND_CVStage3Monitoring`
 
@@ -56,7 +52,7 @@ This is the second new method to assess a cleaning process performance.
 
 ---
 
-## 2.2 Traditional Ppu Methods
+## 2.2 Traditional Method to calculate  Ppu for a CQA or for a Cleaning Process
 
 ### 2.2.1 For a Single CQA:
 - **Method 1**: Split data into subgroups and use `Ppu_KDEDP` (no USL normalization). This is the traditional method.
@@ -68,13 +64,11 @@ This is the second new method to assess a cleaning process performance.
 ### 2.2.2 For 1–3 CQAs:
 - `Ppu_SWWC_KDEDP_overall`: Computes worst-case Ppu across all CQAs, representing overall cleaning process capability.
 
-This is traditional method to assess a cleaning process performance.
-
 ---
 
 ## 📐 3. Bandwidth Function Clarification
 
-Although **JMP** claims its bandwidth formula is: BW = 0.9 * s / n^(1/5)
+Although **JMP** claims its bandwidth formula is BW = 0.9 * s / n^(1/5)
 
 Where:
 
@@ -85,7 +79,7 @@ Where:
 
 We observed that:
 
-- The actual bandwidth formula should be:  BW = 1.06 * s / n^(1/5)
+- The actual bandwidth formula should be BW = 1.06 * s / n^(1/5)
 
   where `s` is the **corrected** sample standard deviation (divided by `n - 1`)
   
