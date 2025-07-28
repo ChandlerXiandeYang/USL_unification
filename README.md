@@ -34,11 +34,11 @@ The file `CODE_AND_its_output_for_the_manuscript.qmd` contains all the code used
 - `Ppu_KDEDPonUSLND`: Calculates Ppu using USL-normalized data.
 - `Ppu_BAKDEDPonUSLND`: Calculates Ppu and its 95% confidence interval using bootstrap.
 
-### 2.1.2 To Assess a Cleaning Process Overall Ppu with 1 to 3 CQAs from DAR, CAR, and Mic Using CQAWWC Method
+### 2.1.2 To Assess a Cleaning Process Overall Ppu with 1 to 3 CQAs from DAR, CAR, and Mic Using CQAWWC-Method
 - `CQAWWC_KDEDPonUSLND`: Computes CQA-wise worst-case Ppu.
 - `CQAWWC_BAKDEDPonUSLND`: Computes Ppu and 95% CI using bootstrap.
   
-### 2.1.3 To Assess a Cleaning Process Overall Ppu with 1 to 3 CQAs from DAR, CAR, and Mic Using CQAWP Method
+### 2.1.3 To Assess a Cleaning Process Overall Ppu with 1 to 3 CQAs from DAR, CAR, and Mic Using CQAWP-Method
 - `CQAWP_KDEDPonUSLND`: Computes pooled Ppu across CQAs.
 - `CQAWP_BAKDEDPonUSLND`: Computes pooled Ppu and 95% CI using bootstrap.
 
@@ -53,7 +53,7 @@ The file `CODE_AND_its_output_for_the_manuscript.qmd` contains all the code used
 
 ## 2.2 Traditional Method to Calculate  Ppu for a CQA or for a Cleaning Process
 
-### 2.2.1 To Assess One of DAR, CAR, or Mic Ppu Using `Ppu_KDEDP`
+### 2.2.1 To Assess One of DAR, CAR, or Mic Ppu Using `Ppu_KDEDP` Method
 
 - **Method 1**: Split data into subgroups manually, use `Ppu_KDEDP` to calculate each subgroup's Ppu (no USL normalization), and then take the minimal. This is the traditional manual method.
 - **Method 2**: Use `Ppu_SWWC_KDEDP` to compute worst-case Ppu across subgroups. You do not need to split data into subgroups but use the data directly. The function can detect all subgroups.
