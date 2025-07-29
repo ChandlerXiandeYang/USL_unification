@@ -103,3 +103,5 @@ All functions in the code allow manual input of the bandwidth `h`, as our code a
     stop("BW must be numeric > 0 or one of: 'Silver1.06', 'Silver0.9', 'Silver0.9IQR'.")
   }
 ```
+
+We will revise the R package "CleaningValidation" once all methodologies are recognized by practitioners and regulatory authorities.
