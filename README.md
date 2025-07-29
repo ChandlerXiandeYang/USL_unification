@@ -54,7 +54,7 @@ This section is for practitioners who want to understand or apply the functions 
 > **Note:** `Ppu_SWWC_KDEDP` uses `Ppu_KDEDPonUSLND` internally, as Ppu is invariant to USL normalization.  
 > You can replace `Ppu_KDEDPonUSLND` with `Ppu_KDEDP` in `Ppu_SWWC_KDEDP`—the output remains the same since Ppu, Ppl, and Ppk are USL-normalization invariants.
 
-### 2.2.2 To Assess Overall Cleaning Process Ppu by Worst Case Across 1–3 CQAs (DAR, CAR, Mic)
+### 2.2.2 To Assess Overall Cleaning Process Ppu by Worst Case Across 1–3 CQAs: DAR, CAR, Mic
 - `Ppu_SWWC_KDEDP_overall`: Computes worst-case Ppu across all CQAs, representing overall cleaning process capability.
 
 ---
