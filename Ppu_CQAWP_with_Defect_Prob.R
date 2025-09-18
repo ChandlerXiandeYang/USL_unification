@@ -100,7 +100,7 @@ Ppu_KDEDPonUSLND_Merged <- function(data1, Residue1, USL1,
   } else {
     area_over_100 <- sum(kde$y[idx_100:length(kde$x)] * diff(kde$x)[1])
     total_area <- sum(kde$y) * diff(kde$x)[1]
-    prob_defective <- area_over_100 / total_area
+    prob_defective <- format(area_over_100 / total_area, scientific=TRUE)
   }
   
   df_result <- data.frame(
@@ -130,5 +130,6 @@ my_result<-Ppu_KDEDPonUSLND_Merged(data1=Eq_DAR, Residue1=DAR, USL1=USL,
 is.null(my_result$Prob_Defective)# This will show the number with full precision
 
 print(my_result$Prob_Defective, digits = 22)# Or, as scientific notation
+
 
 format(my_result$Prob_Defective, scientific = TRUE)
